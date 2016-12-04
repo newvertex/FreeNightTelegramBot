@@ -25,6 +25,7 @@
   "dependencies": {
     "axios": "^0.15.3",
     "imgur": "^0.2.0",
+    "jsonfile": "^2.4.0",
     "telegraf": "^3.5.2"
   }
 }

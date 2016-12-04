@@ -1,6 +1,8 @@
 const Telegraf = require('telegraf');
 
-// Enter bot API Token on here or add ass environment varialbe
+let userManager = require('./user-manager');
+
+// Enter bot API Token on here or add as environment varialbe
 const BOT_API_TOKEN = process.env.API_TOKEN || '';
 
 const bot = new Telegraf(BOT_API_TOKEN);
