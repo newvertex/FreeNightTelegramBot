@@ -24,12 +24,22 @@ let users = null;
 
 // Read users data from file
 function readUsersFile() {
-  users = jsonfile.readFileSync(FILE_PATH) || {};
+  try {
+    users = jsonfile.readFileSync(FILE_PATH) || [];
+  } catch(ex) {
+    if (ex.code === 'ENOENT') {
+      console.log('Users file not exists, no problem I will make it for you');
+      writeUsersFile();
+      readUsersFile();
+    } else {
+      console.log(ex.message);
+    }
+  }
 }
 
 // Write back data to file
 function writeUsersFile() {
-  jsonfile.writeFileSync(FILE_PATH, users);
+  jsonfile.writeFileSync(FILE_PATH, users || []);
 }
 
 // Add new user to main Users object, after check if not exists
@@ -93,9 +103,10 @@ function getId(user) {
     result = {};
     result.id = currentUser[0].id;
 
-    let currentKey = currentUser.keys.filter((k) => k.key === user.keys[0].key);
+    let currentKey = currentUser[0].keys.filter((k) => k.key === user.keys[0].key);
 
     if (currentKey.length) {
+      result.keys = {};
       result.keys[0] = currentKey[0];
     }
   }
