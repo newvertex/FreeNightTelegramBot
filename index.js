@@ -1,4 +1,5 @@
 const Telegraf = require('telegraf');
+const { memorySession } = require('telegraf');
 
 let userManager = require('./user-manager');
 
@@ -6,6 +7,10 @@ let userManager = require('./user-manager');
 const BOT_API_TOKEN = process.env.API_TOKEN || '';
 
 const bot = new Telegraf(BOT_API_TOKEN);
+
+bot.use(memorySession);
+
+
 
 bot.startPolling();
 
