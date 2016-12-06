@@ -141,9 +141,9 @@ bot.on('channel_post', (ctx) => {
 });
 
 bot.on('message', (ctx) => {
-
   if (typeof (ctx.message.text) !== 'undefined' &&
-  ctx.message.chat.type === 'group') {
+  (ctx.message.chat.type === 'group' ||
+    ctx.message.chat.type === 'supergroup')) {
 
     if (ctx.message.text.startsWith('/reg ')) {
       let chatId = ctx.message.chat.id;
