@@ -2,6 +2,7 @@ const Telegraf = require('telegraf');
 const { memorySession } = require('telegraf');
 
 let userManager = require('./user-manager');
+let imageUploader = require('./image-uploader');
 
 // Enter bot API Token on here or add as environment varialbe
 const BOT_API_TOKEN = process.env.API_TOKEN || '';
@@ -67,6 +68,29 @@ bot.command('cancel', (ctx) => {
   cancelRegistration(userId);
 });
 
+bot.on('photo', (ctx) => {
+  if (ctx.message.chat.type === 'private') {
+    ctx.reply(`Image recievd, Please wait to complete upload`);
+
+    // Get file_if of best quality version of photo from photo list
+    let photoFileId = ctx.message.photo[ctx.message.photo.length - 1].file_id;
+
+    // Get file link from telegram server
+    ctx.telegram.getFileLink(photoFileId)
+      .then((fileLink) => {
+        // Upload photo from telegram server to imgur and return the link to user chat page
+        imageUploader.uploadIt(fileLink)
+          .then((jsonResult) => {
+            return ctx.reply(`Image link is:\n ${jsonResult.data.link}`);
+          }).catch((err) => {
+            return ctx.reply(`Error on uploading image:\n ${err.message}\ntry again later`);
+          });
+
+      }).catch((err) => {
+        return ctx.reply(`Error on get file link:\n${err.message}\ntry again later`);
+      });
+    }
+});
 
 bot.on('channel_post', (ctx) => {
 
