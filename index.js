@@ -3,6 +3,7 @@ const { memorySession } = require('telegraf');
 
 let userManager = require('./user-manager');
 let imageUploader = require('./image-uploader');
+let shortLink = require('./shortlink');
 
 // Enter bot API Token on here or add as environment varialbe
 const BOT_API_TOKEN = process.env.API_TOKEN || '';
@@ -68,9 +69,35 @@ bot.command('cancel', (ctx) => {
   cancelRegistration(userId);
 });
 
+bot.hears(/^\/shortLink (.+)$/, (ctx) => {
+  // Get url from bot command, if url start with http:// or https:// continue otherwise send back error!
+  let linkUrl = ctx.match[1].startsWith('http://') || ctx.match[1].startsWith('https://') ? ctx.match[1] : null;
+
+  if (linkUrl) {
+    ctx.reply(`Link address received, Please wait...`);
+    shortLink.shortIt(linkUrl)
+      .then((result) => {
+
+        // Check server result is valid or not!
+        if (result.data.length > 5) {
+          return ctx.reply(`Short link address is:\n ${result.data}`);
+        } else {
+          return ctx.reply(`Error on generating short link:\n ${result.data}`);
+        }
+
+      }).catch((err) => {
+        return ctx.reply(`Error on generating short link:\n ${err.message}`);
+      });
+
+  } else {
+    ctx.reply(`Link address is not valid!\nPlease use an address that starts with 'http://' or 'https://'`);
+  }
+
+});
+
 bot.on('photo', (ctx) => {
   if (ctx.message.chat.type === 'private') {
-    ctx.reply(`Image recievd, Please wait to complete upload`);
+    ctx.reply(`Image received, Please wait...`);
 
     // Get file_if of best quality version of photo from photo list
     let photoFileId = ctx.message.photo[ctx.message.photo.length - 1].file_id;
@@ -87,7 +114,7 @@ bot.on('photo', (ctx) => {
           });
 
       }).catch((err) => {
-        return ctx.reply(`Error on get file link:\n${err.message}\ntry again later`);
+        return ctx.reply(`Error on get file link:\n ${err.message}\ntry again later`);
       });
     }
 });
