@@ -23,10 +23,11 @@
   },
   "homepage": "https://github.com/newvertex/FreeNightTelegramBot#readme",
   "dependencies": {
-    "axios": "^0.15.3",
     "imgur": "^0.2.0",
     "jsonfile": "^2.4.0",
     "prettysize": "0.0.3",
+    "request": "^2.79.0",
+    "request-promise-native": "^1.0.3",
     "telegraf": "^3.5.2"
   }
 }

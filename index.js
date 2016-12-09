@@ -4,7 +4,6 @@ const { memorySession } = require('telegraf');
 let userManager = require('./user-manager');
 let imageUploader = require('./image-uploader');
 let shortLink = require('./shortlink');
-let linkInfo = require('./link-info');
 
 // Enter bot API Token on here or add as environment varialbe
 const BOT_API_TOKEN = process.env.API_TOKEN || '';
@@ -80,18 +79,23 @@ bot.hears(/^\/shortLink (.+)$/, (ctx) => {
   if (linkUrl) {
     ctx.reply(`Link address received, Please wait...`);
 
-    shortLink.shortIt(linkUrl)
+    shortLink(linkUrl)
       .then((result) => {
-        // Check server result is valid or not!
-        if (result.data.length > 5) {
-          return linkInfo(linkUrl, result.data);
-        } else {
-          ctx.reply(`Error on generating short link:\n ${result.data}`);
+        let answerMsg = `Short link address is:\n\n ${result.shortUrl}\n\nRequested link was: ${result.url}`;
+
+        if (result.fileInfo) {
+          answerMsg = `File info: ${result.fileInfo.name} - ${result.fileInfo.sizeInMB} \n\n` + answerMsg;
         }
-      }).then((result) => {
-        ctx.reply(`Short link address is:\n ${result.shortUrl}\n ${result.fileName} ${result.sizeInMb}`);
-      }).catch((err) => {
-        ctx.reply(`Error on generating short link:\n ${err.message}`);
+
+        ctx.reply(answerMsg);
+      })
+      .catch((err) => {
+        // Code 1 for server error and code 2 for link access error
+        if (err.code === 1) {
+          ctx.reply(`${err.message}\n\nRequested link was: ${err.result.url}`);
+        } else if (err.code === 2) {
+          ctx.reply(`${err.message}\n\nShort link address is:\n\n ${err.result.shortUrl}\n\nRequested link was: ${err.result.url}`)
+        }
       });
 
   } else {
