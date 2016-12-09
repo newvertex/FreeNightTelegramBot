@@ -4,6 +4,7 @@ const { memorySession } = require('telegraf');
 let userManager = require('./user-manager');
 let imageUploader = require('./image-uploader');
 let shortLink = require('./shortlink');
+let linkInfo = require('./link-info');
 
 // Enter bot API Token on here or add as environment varialbe
 const BOT_API_TOKEN = process.env.API_TOKEN || '';
@@ -27,7 +28,7 @@ function cancelRegistration(userId) {
 // Put user on registration mode and ask for confirmation
 bot.command('register', (ctx) => {
   if (typeof (ctx.message.chat.type) !== 'undefined' &&
-      ctx.message.chat.type === 'private') {
+    ctx.message.chat.type === 'private') {
     let userId = ctx.message.from.id;
 
     // Make sure user is in the list
@@ -47,7 +48,10 @@ bot.hears(/^\/confirm (.+)$/, (ctx) => {
   if (userId in registerSession && registerSession[userId]) {
     let user = {
       id: userId,
-      keys: [{ key: chatKey, id: registerSession[userId] }]
+      keys: [{
+        key: chatKey,
+        id: registerSession[userId]
+      }]
     };
 
     if (userManager.addKey(user)) {
@@ -75,18 +79,19 @@ bot.hears(/^\/shortLink (.+)$/, (ctx) => {
 
   if (linkUrl) {
     ctx.reply(`Link address received, Please wait...`);
+
     shortLink.shortIt(linkUrl)
       .then((result) => {
-
         // Check server result is valid or not!
         if (result.data.length > 5) {
-          return ctx.reply(`Short link address is:\n ${result.data}`);
+          return linkInfo(linkUrl, result.data);
         } else {
-          return ctx.reply(`Error on generating short link:\n ${result.data}`);
+          ctx.reply(`Error on generating short link:\n ${result.data}`);
         }
-
+      }).then((result) => {
+        ctx.reply(`Short link address is:\n ${result.shortUrl}\n ${result.fileName} ${result.sizeInMb}`);
       }).catch((err) => {
-        return ctx.reply(`Error on generating short link:\n ${err.message}`);
+        ctx.reply(`Error on generating short link:\n ${err.message}`);
       });
 
   } else {
@@ -116,7 +121,7 @@ bot.on('photo', (ctx) => {
       }).catch((err) => {
         return ctx.reply(`Error on get file link:\n ${err.message}\ntry again later`);
       });
-    }
+  }
 });
 
 bot.on('channel_post', (ctx) => {
@@ -142,8 +147,8 @@ bot.on('channel_post', (ctx) => {
 
 bot.on('message', (ctx) => {
   if (typeof (ctx.message.text) !== 'undefined' &&
-  (ctx.message.chat.type === 'group' ||
-    ctx.message.chat.type === 'supergroup')) {
+    (ctx.message.chat.type === 'group' ||
+      ctx.message.chat.type === 'supergroup')) {
 
     if (ctx.message.text.startsWith('/reg ')) {
       let chatId = ctx.message.chat.id;
