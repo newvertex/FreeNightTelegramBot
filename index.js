@@ -15,15 +15,6 @@ bot.use(memorySession());
 // Use array to keep track of user on registration
 let registerSession = [];
 
-// Call this function anytime want to check if on registration then cancel it
-function cancelRegistration(userId) {
-  if (userId in registerSession) {
-    delete registerSession[userId];
-
-    bot.telegram.sendMessage(userId, 'Registration canceled!');
-  }
-}
-
 // Put user on registration mode and ask for confirmation
 bot.command('register', (ctx) => {
   if (typeof (ctx.message.chat.type) !== 'undefined' &&
@@ -35,7 +26,7 @@ bot.command('register', (ctx) => {
 
     registerSession[userId] = null;
 
-    ctx.reply(`I get your register request,\nSend below command on group or channel you want to register on it:\n/reg ${userId}\nor send /cancel to cancel registration!`);
+    ctx.reply(`I get your register request,\nSend below command on group or channel you want to register on it:\n/reg ${userId}\nor send /cancelReg to cancel registration!`);
   }
 });
 
@@ -60,16 +51,21 @@ bot.hears(/^\/confirm (.+)$/, (ctx) => {
       delete registerSession[userId];
     } else {
       ctx.telegram.sendMessage(userId,
-        `The entered name was exists, try another one\nPlease confirm it with a unique name (you can't change it anymore),\nTo confirm it just send /confirm your-unique-name\nor to cancel it just send /cancel.`);
+        `The entered name was exists, try another one\nPlease confirm it with a unique name (you can't change it anymore),\nTo confirm it just send /confirm your-unique-name\nor to cancel it just send /cancelReg.`);
     }
   } else {
     ctx.reply(`You are not on registration!\nUse /help to read more.`);
   }
 });
 
-bot.command('cancel', (ctx) => {
+// Cancel Registration
+bot.command('cancelReg', (ctx) => {
   let userId = ctx.message.from.id;
-  cancelRegistration(userId);
+  if (userId in registerSession) {
+    delete registerSession[userId];
+
+    bot.telegram.sendMessage(userId, 'Registration canceled!');
+  }
 });
 
 bot.hears(/^\/shortLink (.+)$/, (ctx) => {
