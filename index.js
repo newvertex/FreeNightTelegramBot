@@ -4,6 +4,7 @@ const { memorySession } = require('telegraf');
 let userManager = require('./user-manager');
 let imageUploader = require('./image-uploader');
 let shortLink = require('./shortlink');
+let templateManager = require('./template/manager');
 
 // Enter bot API Token on here or add as environment varialbe
 const BOT_API_TOKEN = process.env.API_TOKEN || '';
@@ -68,6 +69,19 @@ bot.command('cancelReg', (ctx) => {
   }
 });
 
+bot.command('start', (ctx) => {
+  let userId = ctx.message.from.id;
+
+  if (ctx.message.chat.type === 'private') {
+    ctx.session.state = null;
+    ctx.session.store = null;
+  }
+
+  userManager.addUser(userId);
+
+  ctx.reply(`Welcome 😊`);
+});
+
 bot.hears(/^\/shortLink (.+)$/, (ctx) => {
   // Get url from bot command, if url start with http:// or https:// continue otherwise send back error!
   let linkUrl = ctx.match[1].startsWith('http://') || ctx.match[1].startsWith('https://') ? ctx.match[1] : null;
@@ -102,30 +116,87 @@ bot.hears(/^\/shortLink (.+)$/, (ctx) => {
 
 bot.on('photo', (ctx) => {
   if (ctx.message.chat.type === 'private') {
-    ctx.reply(`Image received, Please wait...`);
-
     // Get file_if of best quality version of photo from photo list
     let photoFileId = ctx.message.photo[ctx.message.photo.length - 1].file_id;
 
-    // Get file link from telegram server
-    ctx.telegram.getFileLink(photoFileId)
-      .then((fileLink) => {
-        // Upload photo from telegram server to imgur and return the link to user chat page
-        imageUploader.uploadIt(fileLink)
-          .then((jsonResult) => {
-            return ctx.reply(`Image link is:\n ${jsonResult.data.link}`);
-          }).catch((err) => {
-            return ctx.reply(`Error on uploading image:\n ${err.message}\ntry again later`);
-          });
+    if (ctx.session.state === 'writing' && ctx.session.store.currentFieldType === 'photo') {
+        ctx.session.store.answer(photoFileId);
+        fillStore(ctx);
+    } else {
+      ctx.reply(`Image received, Please wait...`);
 
-      }).catch((err) => {
-        return ctx.reply(`Error on get file link:\n ${err.message}\ntry again later`);
-      });
+      // Get file link from telegram server
+      ctx.telegram.getFileLink(photoFileId)
+        .then((fileLink) => {
+          // Upload photo from telegram server to imgur and return the link to user chat page
+          imageUploader.uploadIt(fileLink)
+            .then((jsonResult) => {
+              return ctx.reply(`Image link is:\n ${jsonResult.data.link}`);
+            }).catch((err) => {
+              return ctx.reply(`Error on uploading image:\n ${err.message}\ntry again later`);
+            });
+
+        }).catch((err) => {
+          return ctx.reply(`Error on get file link:\n ${err.message}\ntry again later`);
+        });
+    }
+  }
+});
+
+bot.hears(/\/new (.+)$/, (ctx) => {
+  if (ctx.message.chat.type === 'private' && !ctx.session.state) {
+    let template = templateManager.selectTemplate(ctx.match[1]);
+
+    if (template) {
+      ctx.session.state = 'writing';
+      ctx.session.store = template;
+
+      fillStore(ctx);
+    }
+  }
+});
+
+function fillStore(ctx) {
+  let store = ctx.session.store;
+
+  if (store) {
+    let prompt = store.prompt();
+    if (prompt) {
+      ctx.reply(prompt);
+    } else {
+      ctx.session.state = 'waiting';
+      ctx.reply(`No more field, now you can see /preview`);
+    }
+  }
+}
+
+bot.command('preview', (ctx) => {
+  if (ctx.message.chat.type === 'private' &&
+   ctx.session.state === 'writing' || ctx.session.state === 'waiting') {
+
+      let userId = ctx.message.from.id;
+      let result = ctx.session.store.result();
+
+      ctx.reply(`Preview of ${ctx.session.store.name}`);
+
+      if (result.type === 'photo') {
+        ctx.telegram.sendPhoto(userId, result.data.photo, {caption: result.data.text});
+      } else if (result.type === 'text') {
+        ctx.telegram.sendMessage(userId, result.data.text, {parse_mode: 'Markdown'});
+      }
+    }
+});
+
+bot.hears(/\/sendTo (.+)$/, (ctx) => {
+  if (ctx.message.chat.type === 'private') {
+    ctx.reply(`Offline~`);
+
+    ctx.session.state = null;
+    ctx.session.store = null;
   }
 });
 
 bot.on('channel_post', (ctx) => {
-
   if (typeof (ctx.update.channel_post.text) !== 'undefined') {
     if (ctx.update.channel_post.text.startsWith('/reg ')) {
 
@@ -142,7 +213,6 @@ bot.on('channel_post', (ctx) => {
       }
     }
   }
-
 });
 
 bot.on('message', (ctx) => {
@@ -165,6 +235,12 @@ bot.on('message', (ctx) => {
     }
   }
 
+  if (typeof (ctx.message.text) !== 'undefined' &&
+    ctx.message.chat.type === 'private' && ctx.session.state === 'writing') {
+
+      ctx.session.store.answer(ctx.message.text);
+      fillStore(ctx);
+    }
 });
 
 bot.startPolling();
