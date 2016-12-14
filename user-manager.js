@@ -13,6 +13,7 @@ let jsonfile = require('jsonfile');
  *       ...
  *     ]
  *  },
+ *  signature: 'userSignature'
  *  ...]
  */
 
@@ -47,10 +48,13 @@ function addUser(userId) {
   if (!users.filter((u) => u.id === userId).length) {
     let user = {
       id: userId,
-      keys: []
+      keys: [],
+      signature: ''
     };
 
     users.push(user);
+    writeUsersFile();
+
     return true;
   } else {
     // User exists
@@ -114,9 +118,26 @@ function getId(user) {
   return result;
 }
 
+function getSignature(userId) {
+  let currentUser = users.filter((u) => u.id === userId);
+
+  return currentUser.length && currentUser[0].signature ? currentUser[0].signature : '';
+}
+
+function setSignature(userId, userSignature) {
+  let currentUser = users.filter((u) => u.id === userId)[0];
+
+  currentUser['signature'] = userSignature;
+  writeUsersFile();
+
+  return true;
+}
+
 // Load users list from file to memory on start
 readUsersFile();
 
 module.exports.addUser = addUser;
 module.exports.addKey = addKey;
 module.exports.getId = getId;
+module.exports.getSignature = getSignature;
+module.exports.setSignature = setSignature;
