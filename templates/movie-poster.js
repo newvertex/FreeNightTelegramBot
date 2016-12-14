@@ -51,17 +51,19 @@ class MoviePoster extends Template {
   result() {
     let photo = super.getFieldValue('photo')[0];
 
-    let title = `🎥Movie: ${super.getFieldValue('movie-name')}`;
-    let director = `👤Director: ${super.getFieldValue('movie-director')}`;
-    let starring = `👥Starring: ${super.getFieldValue('movie-stars')}`;
-    let release = `📆Release date: ${super.getFieldValue('movie-release-date')}`;
-    let tag = `${super.getFieldValue('hash-tag')}`;
+    let title = `🎥Movie: ${super.getFieldValue('movie-name')[0] || '-'}`;
+    let director = `👤Director: ${super.getFieldValue('movie-director')[0] || '-'}`;
+    let starring = `👥Starring: ${super.getFieldValue('movie-stars')[0] || '-'}`;
+    let release = `📆Release date: ${super.getFieldValue('movie-release-date')[0] || '-'}`;
+
+    let tag = super.getFieldValue('hash-tag')[0] || '-';
+    tag = (tag !== '-') ? '\n' + tag.trim().split(' ').map(i => '#' + i).join(' ') : '';
 
     return {
       type: 'photo',
       data: {
         photo: photo,
-        text: `${title}\n${director}\n${starring}\n${release}\n${tag}`
+        text: `${title}\n${director}\n${starring}\n${release}\n${tag}\n`
       }
     }
   }
