@@ -1,15 +1,20 @@
-const MoviePoster = require('./movie-poster');
+module.exports = function(multiLang){
 
-function selectTemplate(templateName) {
-  let template = null;
+  const MoviePoster = require('./movie-poster')(multiLang);
 
-  switch (templateName) {
-    case 'MoviePoster':
-      template = new MoviePoster();
-      break;
+  function selectTemplate(templateName) {
+    let template = null;
+
+    switch (templateName) {
+      case 'MoviePoster':
+        template = new MoviePoster();
+        break;
+    }
+
+    return template;
   }
 
-  return template;
+  return {
+    selectTemplate
+  };
 }
-
-module.exports.selectTemplate = selectTemplate;

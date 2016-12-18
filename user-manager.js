@@ -13,7 +13,8 @@ let jsonfile = require('jsonfile');
  *       ...
  *     ]
  *  },
- *  signature: 'userSignature'
+ *  signature: 'userSignature',
+ *  lang: 'userLanguage'
  *  ...]
  */
 
@@ -49,7 +50,8 @@ function addUser(userId) {
     let user = {
       id: userId,
       keys: [],
-      signature: ''
+      signature: '',
+      lang: 'en'
     };
 
     users.push(user);
@@ -133,6 +135,21 @@ function setSignature(userId, userSignature) {
   return true;
 }
 
+function getLang(userId) {
+  let currentUser = users.filter((u) => u.id === userId);
+
+  return currentUser.length && currentUser[0].lang ? currentUser[0].lang : 'en';
+}
+
+function setLang(userId, userLanguage) {
+  let currentUser = users.filter((u) => u.id === userId)[0];
+
+  currentUser['lang'] = userLanguage;
+  writeUsersFile();
+
+  return true;
+}
+
 // Load users list from file to memory on start
 readUsersFile();
 
@@ -141,3 +158,5 @@ module.exports.addKey = addKey;
 module.exports.getId = getId;
 module.exports.getSignature = getSignature;
 module.exports.setSignature = setSignature;
+module.exports.getLang = getLang;
+module.exports.setLang = setLang;
