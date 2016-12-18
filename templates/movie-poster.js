@@ -60,7 +60,7 @@ class MoviePoster extends Template {
       'director': super.getFieldValue('movie-director')[0] || '-',
       'starring': super.getFieldValue('movie-stars')[0] || '-',
       'release': super.getFieldValue('movie-release-date')[0] || '-',
-      'tag': 'tag'
+      'tag': tag
     };
 
     return {

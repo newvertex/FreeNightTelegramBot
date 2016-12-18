@@ -90,5 +90,9 @@
   "newPost-is-empty": {
     "en": "Noting to show!\nFirst fill some fields",
     "fa": ""
+  },
+  "message-sent": {
+    "en": "Message sent!\n %{postLink}",
+    "fa": ""
   }
 }

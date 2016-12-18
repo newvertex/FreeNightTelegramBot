@@ -23,7 +23,7 @@
     "en": "Hash tag?",
     "fa": ""
   },
-  "": {
+  "result": {
     "en": "🎥Movie: %{name}\n👤Director: %{director}\n👥Starring: %{starring}\n📆Release date: %{release}\n%{tag}\n",
     "fa": ""
   }
