@@ -202,37 +202,85 @@ function fillStore(ctx) {
   }
 }
 
+function getChatId(ctx, userId, preview) {
+  if (preview) {
+    return userId;
+  }
+
+  let chatKey = ctx.match[1];
+
+  let user = {
+    id: userId,
+    keys: [{
+      key: chatKey,
+       id: null
+     }]
+  };
+
+  let key = userManager.getId(user);
+
+  if (key && key.keys) {
+    return key.keys[0].id;
+  }
+
+  return null;
+}
+
+function postDelivery(ctx, userId, msg) {
+  ctx.session.state = 'sent';
+
+  let postLink = '';
+  
+  if (msg.chat.type === 'channel') {
+    let messageId = msg.message_id;
+    let chatUsername = msg.chat.username;
+    postLink = 'https://telegram.me/' + chatUsername + '/' + messageId;
+  }
+
+  ctx.telegram.sendMessage(userId, __('message-sent', { postLink }, getLang(userId)));
+}
+
+function sendPost(ctx, userId, preview) {
+  let chatId = getChatId(ctx, userId, preview);
+  let userSignature = userManager.getSignature(userId)
+  let result = ctx.session.store.result(getLang(userId));
+
+  if (result.type === 'photo') {
+    return ctx.telegram.sendPhoto(chatId, result.data.photo, {caption: result.data.text + userSignature});
+  } else if (result.type === 'text') {
+    return ctx.telegram.sendMessage(chatId, result.data.text + userSignature, {parse_mode: 'Markdown'});
+  }
+}
+
+function postAction(ctx, preview = true) {
+  let userId = ctx.message.from.id;
+
+  sendPost(ctx, userId, preview)
+    .then(res => {
+      if (preview && ctx.session.state === 'new') {
+        ctx.reply(__('newPost-not-ready', getLang(userId)))
+          .then(res => {
+            fillStore(ctx);
+          });
+      }
+      if (!preview) {
+        postDelivery(ctx, userId, res);
+      }
+    })
+    .catch(err => {
+      ctx.reply(__('newPost-is-empty', getLang(userId)))
+        .then(res => {
+          fillStore(ctx);
+        });
+    });
+
+}
+
 bot.command('preview', (ctx) => {
   let state = ctx.session.state;
   if (ctx.message.chat.type === 'private' &&
     (state === 'new' || state === 'ready' || state === 'sent')) {
-
-      let userId = ctx.message.from.id;
-      let userSignature = userManager.getSignature(userId)
-      let result = ctx.session.store.result(getLang(userId));
-
-      ctx.reply(`Preview of ${ctx.session.store.name}`)
-        .then(res => {
-          if (result.type === 'photo') {
-            return ctx.telegram.sendPhoto(userId, result.data.photo, {caption: result.data.text + userSignature});
-          } else if (result.type === 'text') {
-            return ctx.telegram.sendMessage(userId, result.data.text + userSignature, {parse_mode: 'Markdown'});
-          }
-        })
-        .then(res => {
-          if (state === 'new') {
-            ctx.reply(__('newPost-not-ready', getLang(userId)))
-              .then(res => {
-                fillStore(ctx);
-              });
-          }
-        })
-        .catch(err => {
-          ctx.reply(__('newPost-is-empty', getLang(userId)))
-            .then(res => {
-              fillStore(ctx);
-            });
-        });
+      postAction(ctx, true);
     }
 });
 
@@ -240,56 +288,8 @@ bot.hears(/\/sendTo (.+)$/, (ctx) => {
   let state = ctx.session.state;
   if (ctx.message.chat.type === 'private' && state &&
     (state === 'ready' || state === 'sent')) {
-
-    let userId = ctx.message.from.id;
-    let chatKey = ctx.match[1];
-
-    let user = {
-      id: userId,
-      keys: [{
-        key: chatKey,
-         id: null
-       }]
-    };
-
-    let key = userManager.getId(user);
-
-    if (key && key.keys) {
-      let chatId = key.keys[0].id;
-      let result = ctx.session.store.result();
-
-      let messageId = '';
-      let chatUsername = '';
-      let postLink = '';
-
-      if (result.type === 'photo') {
-        ctx.telegram.sendPhoto(chatId, result.data.photo, {caption: result.data.text})
-          .then(res => {
-            if (res.chat.type === 'channel') {
-              messageId = res.message_id;
-              chatUsername = res.chat.username;
-              postLink = 'https://telegram.me/' + chatUsername + '/'+messageId;
-            }
-
-            ctx.session.state = 'sent';
-            ctx.telegram.sendMessage(userId, `Message sent to ${key.keys[0].key}\nLink to post: ${postLink}`);
-          });
-      } else if (result.type === 'text') {
-        ctx.telegram.sendMessage(chatId, result.data.text, {parse_mode: 'Markdown'})
-          .then(res => {
-            if (res.chat.type === 'channel') {
-              messageId = res.message_id;
-              chatUsername = res.chat.username;
-              postLink = 'https://telegram.me/' + chatUsername + '/'+messageId;
-            }
-
-            ctx.session.state = 'sent';
-            ctx.telegram.sendMessage(userId, `Message sent to ${key.keys[0].key}\nLink to post: ${postLink}`);
-          });
-      }
-
+      postAction(ctx, false);
     }
-  }
 });
 
 // Register user and send request to confirm registration
