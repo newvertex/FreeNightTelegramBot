@@ -1,0 +1,94 @@
+{
+  "welcome": {
+    "en": "Welcome! 😊",
+    "fa": "😊خوش آمدید"
+  },
+  "setLang-success": {
+    "en": "Language set to English successfuly.",
+    "fa": "زبان به فارسی تغییر کرد."
+  },
+  "setLang-failed": {
+    "en": "Requested language not exists!\n `en`: English\n `fa`: فارسی",
+    "fa": "زبان درخواست شده وجود ندارد\n `en`: English\n `fa`:  فارسی"
+  },
+  "register-start": {
+    "en": "I get your register request,\nSend below command on group or channel you want to register on it:\n/reg %{userId}\nor send /cancelReg to cancel registration!",
+    "fa": ""
+  },
+  "register-request-confirm": {
+    "en": "Please confirm your registration with a unique name (you can't change it anymore),\nTo confirm it just send /confirm your-unique-name\nor to cancel it just send /cancel.",
+    "fa": ""
+  },
+  "register-confirm-success": {
+    "en": "Registration confirmed, The new name is: %{chatKey}",
+    "fa": ""
+  },
+  "register-confirm-failed": {
+    "en": "The entered name was exists, try another one\nPlease confirm it with a unique name (you can't change it anymore),\nTo confirm it just send /confirm your-unique-name\nor to cancel it just send /cancelReg.",
+    "fa": ""
+  },
+  "register-not-started": {
+    "en": "You are not on registration!\nUse /help to read more.",
+    "fa": ""
+  },
+  "register-cancel": {
+    "en": "Registration canceled!",
+    "fa": ""
+  },
+  "shortLink-received": {
+    "en": "Link address received, Please wait...",
+    "fa": "آدرس لینک دریافت شد، لطفا صبر نمایید..."
+  },
+  "shortLink-success": {
+    "en":  "Short link address is:\n\n %{shortUrl}\n\nRequested link was: %{url}",
+    "fa":  "آدرس کوتاه شده ی شما:\n\n %{shortUrl}\n\nآدرس اصلی درخواست شده: %{url}"
+  },
+  "shortLink-error-1": {
+    "en": "%{errMessage}\n\nRequested link was: %{url}",
+    "fa": ""
+  },
+  "shortLink-error-2": {
+    "en": "%{errMessage}\n\nShort link address is:\n\n %{shortUrl}\n\nRequested link was: %{url}",
+    "fa": ""
+  },
+  "shortLink-failed": {
+    "en": "Link address is not valid!\nPlease use an address that starts with 'http://' or 'https://",
+    "fa": ""
+  },
+  "image-received": {
+    "en": "Image received, Please wait...",
+    "fa": ""
+  },
+  "image-success": {
+    "en": "Image link is:\n %{link}",
+    "fa": ""
+  },
+  "image-upload-error": {
+    "en": "Error on uploading image:\n %{errMessage}\ntry again later",
+    "fa": ""
+  },
+  "image-error": {
+    "en": "Error on get file link:\n %{errMessage}\ntry again later",
+    "fa": ""
+  },
+  "newPost-start": {
+    "en": "New %{templateName} was created👍, Please answer the questions to fill the fields of new post",
+    "fa": ""
+  },
+  "newPost-failed": {
+    "en": "Selected template not exists!",
+    "fa": ""
+  },
+  "newPost-ready": {
+    "en": "This post is Ready to send\nNow you can use /sendTo channelKey or /sendTo groupKey commands to send this post to channel or group\nOr /preview to see a preview of your post",
+    "fa": ""
+  },
+  "newPost-not-ready": {
+    "en": "This post is not ready to send!\nPlease fill all the fields",
+    "fa": ""
+  },
+  "newPost-is-empty": {
+    "en": "Noting to show!\nFirst fill some fields",
+    "fa": ""
+  }
+}
