@@ -1,0 +1,30 @@
+{
+  "p-uploadPhoto": {
+    "en": "Upload a photo or give me the image link",
+    "fa": ""
+  },
+  "p-movieName": {
+    "en": "What is the movie name?",
+    "fa": ""
+  },
+  "p-movieDirector": {
+    "en": "Who is the director?",
+    "fa": ""
+  },
+  "p-starring": {
+    "en": "Starring?",
+    "fa": ""
+  },
+  "p-release": {
+    "en": "Release dates?",
+    "fa": ""
+  },
+  "p-hashTag": {
+    "en": "Hash tag?",
+    "fa": ""
+  },
+  "": {
+    "en": "🎥Movie: %{name}\n👤Director: %{director}\n👥Starring: %{starring}\n📆Release date: %{release}\n%{tag}\n",
+    "fa": ""
+  }
+}
