@@ -151,7 +151,9 @@ bot.on('photo', (ctx) => {
     let photoFileId = ctx.message.photo[ctx.message.photo.length - 1].file_id;
     let userId = ctx.message.from.id;
 
-    if (ctx.session.state === 'new' && ctx.session.store.currentFieldType === 'photo') {
+    if (ctx.session.state === 'new' &&
+      ctx.session.store.type === 'photo' &&
+      ctx.session.store.currentFieldType === 'photo') {
         ctx.session.store.answer(photoFileId);
         fillStore(ctx);
     } else {
@@ -163,7 +165,14 @@ bot.on('photo', (ctx) => {
           // Upload photo from telegram server to imgur and return the link to user chat page
           imageUploader.uploadIt(fileLink)
             .then((jsonResult) => {
-              return ctx.reply(__('image-success', { 'link': jsonResult.data.link }, getLang(userId)));
+              if (ctx.session.state === 'new' &&
+                ctx.session.store.type === 'text' &&
+                ctx.session.store.currentFieldType === 'photo') {
+                  ctx.session.store.answer(jsonResult.data.link);
+                  fillStore(ctx);
+              } else {
+                return ctx.reply(__('image-success', { 'link': jsonResult.data.link }, getLang(userId)));
+              }
             }).catch((err) => {
               return ctx.reply(__('image-upload-error', { 'errMessage': err.message }, getLang(userId)));
             });

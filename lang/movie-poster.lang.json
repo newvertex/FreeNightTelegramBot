@@ -19,12 +19,40 @@
     "en": "Release dates?",
     "fa": ""
   },
+  "p-country": {
+    "en": "Country?",
+    "fa": ""
+  },
+  "p-genre": {
+    "en": "Genre?",
+    "fa": ""
+  },
+  "p-rank": {
+    "en": "Rank?",
+    "fa": ""
+  },
+  "p-reviewerRank": {
+    "en": "Reviewer rank?",
+    "fa": ""
+  },
+  "p-summary": {
+    "en": "Summary?",
+    "fa": ""
+  },
+  "p-links": {
+    "en": "Add links on seperate post.\nUse /skip on end.",
+    "fa": ""
+  },
   "p-hashTag": {
     "en": "Hash tag?",
     "fa": ""
   },
-  "result": {
+  "movie-poster-result": {
     "en": "🎥Movie: %{name}\n👤Director: %{director}\n👥Starring: %{starring}\n📆Release date: %{release}\n%{tag}\n",
+    "fa": ""
+  },
+  "movie-result": {
+    "en": "🎥Movie: %{name}\n👤Director: %{director}\n👥Starring: %{starring}\n📆Release date: %{release}\n🌍Country: %{country}\n🖥Genre: %{genre}\n💯Rank: %{rank}\n👁‍🗨Reviewer rank: %{reviewerRank}\n✍Summary: %{summary}\n\n🎇Poster: %{poster}\n%{links}\n%{tag}\n",
     "fa": ""
   }
 }

@@ -67,7 +67,7 @@ class MoviePoster extends Template {
       type: 'photo',
       data: {
         photo: photo,
-        text: __('result', data, lang)
+        text: __('movie-poster-result', data, lang)
       }
     }
   }
