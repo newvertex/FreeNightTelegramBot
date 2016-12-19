@@ -1,5 +1,5 @@
 const Telegraf = require('telegraf');
-const { memorySession } = require('telegraf');
+const { memorySession, Markup, Extra } = require('telegraf');
 
 const __ = require('multi-lang')('lang/lang.json', 'en', false);
 
@@ -257,6 +257,17 @@ function postDelivery(ctx, userId, msg) {
   ctx.telegram.sendMessage(userId, __('message-sent', { postLink }, getLang(userId)));
 }
 
+function getUrlButtons(data) {
+  let buttons = [];
+  for (let {text, url} of data) {
+    buttons.push(Markup.urlButton(text, url));
+  }
+
+  return Extra.markdown().markup(
+    Markup.inlineKeyboard(buttons)
+  );
+}
+
 function sendPost(ctx, userId, preview) {
   let chatId = getChatId(ctx, userId, preview);
   let userSignature = userManager.getSignature(userId)
@@ -265,7 +276,11 @@ function sendPost(ctx, userId, preview) {
   if (result.type === 'photo') {
     return ctx.telegram.sendPhoto(chatId, result.data.photo, {caption: result.data.text + userSignature});
   } else if (result.type === 'text') {
-    return ctx.telegram.sendMessage(chatId, result.data.text + userSignature, {parse_mode: 'Markdown'});
+    if (result.data.buttons) {
+      return ctx.telegram.sendMessage(chatId, result.data.text + userSignature, getUrlButtons(result.data.buttons));
+    } else {
+      return ctx.telegram.sendMessage(chatId, result.data.text + userSignature, {parse_mode: 'Markdown'});
+    }
   }
 }
 

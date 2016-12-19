@@ -52,7 +52,7 @@
     "fa": ""
   },
   "movie-result": {
-    "en": "🎥Movie: %{name}\n👤Director: %{director}\n👥Starring: %{starring}\n📆Release date: %{release}\n🌍Country: %{country}\n🖥Genre: %{genre}\n💯Rank: %{rank}\n👁‍🗨Reviewer rank: %{reviewerRank}\n✍Summary: %{summary}\n\n🎇Poster: %{poster}\n%{links}\n%{tag}\n",
+    "en": "(%{poster})🎥Movie: %{name}\n👤Director: %{director}\n👥Starring: %{starring}\n📆Release date: %{release}\n🌍Country: %{country}\n🖥Genre: %{genre}\n💯Rank: %{rank}\n👁‍🗨Reviewer rank: %{reviewerRank}\n✍Summary: %{summary}\n\n%{links}\n%{subLinks}\n%{tag}\n",
     "fa": ""
   }
 }

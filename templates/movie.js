@@ -93,8 +93,12 @@ class Movie extends Template {
 
   result(lang = 'en') {
     let imageLink = super.getFieldValue('photo')[0];
+    let seperator = '—---------------------------------------------';
 
     let links = '';
+    let subLinks = '';
+    let buttons = null;
+
     let movieLinks = super.getFieldValue('movie-links');
     for (let link of movieLinks) {
       let mark1 = link.indexOf(' ');
@@ -107,13 +111,18 @@ class Movie extends Template {
       let url = link.substring(mark3);
 
       if (linkType === '/link') {
-        links += `—---------------------------------------------\n🎥${quality}: 🔻(${text})\n🔥${url}\n`;
+        links += `${seperator}\n🎥${quality}: 🔻(${text})\n🔥${url}\n`;
       } else if (linkType === '/hyperLink') {
-        links += `—---------------------------------------------\n[🎥${quality}: 🔻(${text})🔥](${url})\n`;
+        links += `${seperator}\n[🎥${quality}: 🔻(${text})🔥](${url})\n`;
       } else if (linkType === '/sub') {
-        links += `—---------------------------------------------\n📇SubLink:🔻\n🔥${url}\n`;
+        subLinks += `${seperator}\n📇SubLink:🔻\n🔥${url}\n`;
       } else if (linkType === '/hyperSub') {
-        links += `—---------------------------------------------\n[📇SubLink:🔻(${text})🔥](${url})\n`;
+        subLinks += `${seperator}\n[📇SubLink:🔻(${text})🔥](${url})\n`;
+      } else if (linkType === '/btn') {
+        if (!buttons) {
+          buttons = [];
+        }
+        buttons.push({'text': text, 'url': url});
       }
     }
 
@@ -132,6 +141,7 @@ class Movie extends Template {
       'summary': super.getFieldValue('movie-summary')[0] || '-',
       'poster': imageLink,
       'links': links,
+      'subLinks': subLinks,
       'tag': tag
     };
 
@@ -139,7 +149,8 @@ class Movie extends Template {
       type: 'text',
       data: {
         photo: null,
-        text: __('movie-result', data, lang)
+        text: __('movie-result', data, lang),
+        buttons: buttons
       }
     }
   }
