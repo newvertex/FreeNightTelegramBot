@@ -11,6 +11,10 @@
     "en": "Requested language not exists!\n `en`: English\n `fa`: فارسی",
     "fa": "زبان درخواست شده وجود ندارد\n `en`: English\n `fa`:  فارسی"
   },
+  "setSignature-success": {
+    "en": "New signature submitted successfuly.",
+    "fa": ""
+  },
   "register-start": {
     "en": "I get your register request,\nSend below command on group or channel you want to register on it:\n/reg %{userId}\nor send /cancelReg to cancel registration!",
     "fa": ""

@@ -104,6 +104,14 @@ bot.hears(/^\/setLang (.+)$/, (ctx) => {
   }
 });
 
+bot.hears(/^\/setSignature (.+)$/, (ctx) => {
+  let userId = ctx.message.from.id;
+  let signature = ctx.match[1];
+
+  userManager.setSignature(userId, signature);
+  ctx.reply(__('setSignature-success', getLang(userId)));
+});
+
 bot.hears(/^\/shortLink (.+)$/, (ctx) => {
   // Get url from bot command, if url start with http:// or https:// continue otherwise send back error!
   let linkUrl = ctx.match[1].startsWith('http://') || ctx.match[1].startsWith('https://') ? ctx.match[1] : null;
@@ -230,7 +238,7 @@ function postDelivery(ctx, userId, msg) {
   ctx.session.state = 'sent';
 
   let postLink = '';
-  
+
   if (msg.chat.type === 'channel') {
     let messageId = msg.message_id;
     let chatUsername = msg.chat.username;
