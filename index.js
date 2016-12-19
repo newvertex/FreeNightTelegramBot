@@ -140,7 +140,7 @@ bot.hears(/^\/shortLink (.+)$/, (ctx) => {
       });
 
   } else {
-    ctx.reply(__('shortLink-failed', lang));
+    ctx.reply(__('shortLink-failed', getLang(userId)));
   }
 
 });
