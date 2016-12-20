@@ -260,7 +260,7 @@ function postDelivery(ctx, userId, msg) {
 function getUrlButtons(data) {
   let buttons = [];
   for (let {text, url} of data) {
-    buttons.push(Markup.urlButton(text, url));
+    buttons.push([Markup.urlButton(text, url)]);
   }
 
   return Extra.markdown().markup(
