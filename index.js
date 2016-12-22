@@ -112,23 +112,35 @@ bot.hears(/^\/setSignature (.+)$/, (ctx) => {
   ctx.reply(__('setSignature-success', getLang(userId)));
 });
 
-bot.hears(/^\/shortLink (.+)$/, (ctx) => {
-  // Get url from bot command, if url start with http:// or https:// continue otherwise send back error!
-  let linkUrl = ctx.match[1].startsWith('http://') || ctx.match[1].startsWith('https://') ? ctx.match[1] : null;
-  let userId = ctx.message.from.id;
+function isLinkValid(url) {
+  // If url start with http:// or https://
+  return url.startsWith('http://') || url.startsWith('https://') ? url : null;
+}
 
-  if (linkUrl) {
+function shortener(ctx, userId, url, onLink = false) {
+  if (isLinkValid(url)) {
     ctx.reply(__('shortLink-received', getLang(userId)));
 
-    shortLink(linkUrl)
+    shortLink(url)
       .then((result) => {
-        let answerMsg = __('shortLink-success', { shortUrl: result.shortUrl, url: result.url }, getLang(userId));
+        let answerMsg = __('shortLink-success', { 'shortUrl': result.shortUrl, 'url': result.url }, getLang(userId));
 
         if (result.fileInfo) {
           answerMsg = `File info: ${result.fileInfo.name} - ${result.fileInfo.sizeInMB} \n\n` + answerMsg;
+
+          if (onLink) {
+            ctx.session.tmpLink.label = result.fileInfo.name;
+            ctx.session.tmpLink.size = result.fileInfo.sizeInMB;
+          }
         }
 
-        ctx.reply(answerMsg);
+        ctx.reply(answerMsg)
+          .then(res => {
+            if (onLink) {
+              ctx.session.tmpLink.setNext(result.shortUrl);
+              linkNextPrompt(ctx, userId);
+            }
+          });
       })
       .catch((err) => {
         // Code 1 for server error and code 2 for link access error
@@ -140,9 +152,14 @@ bot.hears(/^\/shortLink (.+)$/, (ctx) => {
       });
 
   } else {
-    ctx.reply(__('shortLink-failed', getLang(userId)));
+    ctx.reply(__('invalidLink', getLang(userId)));
   }
+}
 
+bot.hears(/^\/shortLink (.+)$/, (ctx) => {
+  let userId = ctx.message.from.id;
+
+  shortener(ctx, userId, ctx.match[1], false);
 });
 
 bot.on('photo', (ctx) => {
@@ -348,24 +365,67 @@ bot.on('channel_post', (ctx) => {
   }
 });
 
+function linkNextPrompt(ctx, userId) {
+  let linkPrompt = ctx.session.tmpLink.getNext();
+
+  if (linkPrompt) {
+    if (linkPrompt.name !== 'url') {
+      ctx.reply(__('links-prompt', { 'fieldName': linkPrompt.name, 'fieldValue': linkPrompt.value }, getLang(userId)));
+    }
+  } else {
+    ctx.session.store.answer(ctx.session.tmpLink);
+    ctx.session.tmpLink = null;
+    ctx.reply(__('links-added', getLang(userId)));
+
+    fillStore(ctx);
+  }
+}
+
 bot.on('message', (ctx) => {
-  if (typeof (ctx.message.text) !== 'undefined' &&
+  let text = ctx.message.text;
+
+  if (typeof (text) !== 'undefined' &&
     (ctx.message.chat.type === 'group' ||
       ctx.message.chat.type === 'supergroup')) {
 
-    if (ctx.message.text.startsWith('/reg ')) {
+    if (text.startsWith('/reg ')) {
       let chatId = ctx.message.chat.id;
-      let userId = ctx.message.text.split(' ')[1];
+      let userId = text.split(' ')[1];
 
       registerUser(ctx, userId, chatId);
     }
   }
 
-  if (typeof (ctx.message.text) !== 'undefined' &&
+  if (typeof (text) !== 'undefined' &&
     ctx.message.chat.type === 'private' && ctx.session.state === 'new') {
 
-      ctx.session.store.answer(ctx.message.text);
-      fillStore(ctx);
+      let userId = ctx.message.from.id;
+
+      if (ctx.session.store.currentFieldType === 'links') {
+        // Create new link
+        if (typeof ctx.session.tmpLink === 'undefined' || !ctx.session.tmpLink) {
+          ctx.session.tmpLink = templateManager.newLink();
+        }
+
+       if (ctx.session.tmpLink.getNext().name === 'url') {
+         if (text.toLowerCase().startsWith('s ')) {
+           shortener(ctx, userId, text.substring(2), true);
+         } else if (isLinkValid(text)) {
+           ctx.session.tmpLink.setNext(text);
+         } else {
+           ctx.reply(__('invalidLink', getLang(userId)));
+         }
+       } else {
+         ctx.session.tmpLink.setNext(text);
+       }
+
+       linkNextPrompt(ctx, userId);
+
+      } else {
+        ctx.session.store.answer(text);
+        fillStore(ctx);
+      }
+
     }
 });
 
