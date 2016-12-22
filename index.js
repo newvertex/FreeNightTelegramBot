@@ -232,16 +232,26 @@ function fillStore(ctx) {
     } else {
       ctx.session.state = 'ready';
       ctx.reply(__('newPost-ready', getLang(userId)));
+
+      if (store.name === 'Movie') {
+        ctx.session.tmpPostPreview =
+          templateManager.newPostPreview(
+            store.getFieldValue('photo')[0],
+            store.getFieldValue('movie-name')[0] || '-',
+            store.getFieldValue('movie-summary')[0] || '-'
+          );
+      }
+
     }
   }
 }
 
-function getChatId(ctx, userId, preview) {
+function getChatId(arg, userId, preview) {
   if (preview) {
     return userId;
   }
 
-  let chatKey = ctx.match[1];
+  let chatKey = arg;
 
   let user = {
     id: userId,
@@ -260,7 +270,7 @@ function getChatId(ctx, userId, preview) {
   return null;
 }
 
-function postDelivery(ctx, userId, msg) {
+function postDelivery(ctx, userId, msg, args) {
   ctx.session.state = 'sent';
 
   let postLink = '';
@@ -272,6 +282,23 @@ function postDelivery(ctx, userId, msg) {
   }
 
   ctx.telegram.sendMessage(userId, __('message-sent', { postLink }, getLang(userId)));
+
+  if (args[1]) {
+    let chatId = getChatId(args[1], userId, false);
+    let postPreview = ctx.session.tmpPostPreview;
+
+    if (chatId && postLink !== '' &&
+      typeof postPreview !== 'undefined' && postPreview) {
+
+        let result = postPreview.result(getLang(userId));
+        let userSignature = userManager.getSignature(userId);
+
+        ctx.telegram.sendPhoto(chatId, result.data.photo, {
+            caption: result.data.text + userSignature,
+            reply_markup: Markup.inlineKeyboard([Markup.urlButton('🔗 GoTo Post', postLink)])
+          });
+    }
+  }
 }
 
 function getUrlButtons(data) {
@@ -285,8 +312,8 @@ function getUrlButtons(data) {
   );
 }
 
-function sendPost(ctx, userId, preview) {
-  let chatId = getChatId(ctx, userId, preview);
+function sendPost(ctx, userId, preview, arg) {
+  let chatId = getChatId(arg, userId, preview);
   let userSignature = userManager.getSignature(userId)
   let result = ctx.session.store.result(getLang(userId));
 
@@ -301,10 +328,10 @@ function sendPost(ctx, userId, preview) {
   }
 }
 
-function postAction(ctx, preview = true) {
+function postAction(ctx, preview = true, args = []) {
   let userId = ctx.message.from.id;
 
-  sendPost(ctx, userId, preview)
+  sendPost(ctx, userId, preview, args[0])
     .then(res => {
       if (preview && ctx.session.state === 'new') {
         ctx.reply(__('newPost-not-ready', getLang(userId)))
@@ -313,7 +340,7 @@ function postAction(ctx, preview = true) {
           });
       }
       if (!preview) {
-        postDelivery(ctx, userId, res);
+        postDelivery(ctx, userId, res, args);
       }
     })
     .catch(err => {
@@ -335,9 +362,11 @@ bot.command('preview', (ctx) => {
 
 bot.hears(/\/sendTo (.+)$/, (ctx) => {
   let state = ctx.session.state;
+  let args = ctx.match[1].split('#');
+
   if (ctx.message.chat.type === 'private' && state &&
     (state === 'ready' || state === 'sent')) {
-      postAction(ctx, false);
+      postAction(ctx, false, args);
     }
 });
 
