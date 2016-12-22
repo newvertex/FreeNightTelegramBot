@@ -55,7 +55,7 @@
     "en": "%{errMessage}\n\nShort link address is:\n\n %{shortUrl}\n\nRequested link was: %{url}",
     "fa": ""
   },
-  "shortLink-failed": {
+  "invalidLink": {
     "en": "Link address is not valid!\nPlease use an address that starts with 'http://' or 'https://",
     "fa": ""
   },
@@ -97,6 +97,14 @@
   },
   "message-sent": {
     "en": "Message sent!\n %{postLink}",
+    "fa": ""
+  },
+  "links-prompt": {
+    "en": "Please enter %{fieldName} of link,\nCurrent value is: %{fieldValue}\nEnter `.` to accept current value or type anything else",
+    "fa": ""
+  },
+  "links-added": {
+    "en": "Link added successfuly",
     "fa": ""
   }
 }

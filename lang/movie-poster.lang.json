@@ -40,7 +40,7 @@
     "fa": ""
   },
   "p-links": {
-    "en": "Add links on seperate post.\nUse /skip on end.",
+    "en": "Add links.\nUse /skip on end.\n\nPlease enter a valid url, to short it type `s ` before link url",
     "fa": ""
   },
   "p-hashTag": {
