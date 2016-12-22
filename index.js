@@ -401,7 +401,7 @@ bot.on('message', (ctx) => {
 
       let userId = ctx.message.from.id;
 
-      if (ctx.session.store.currentFieldType === 'links') {
+      if (ctx.session.store.currentFieldType === 'links' && text !== '/skip') {
         // Create new link
         if (typeof ctx.session.tmpLink === 'undefined' || !ctx.session.tmpLink) {
           ctx.session.tmpLink = templateManager.newLink();
