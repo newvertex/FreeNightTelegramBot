@@ -70,15 +70,11 @@ class Template {
   answer(answerValue) {
     let field = this._fields[this._state];
 
-    if (field.multiple && answerValue === '/skip') {
+    if (field.multiple && typeof answerValue === 'string' && answerValue === '/skip') {
       this.incState();
     } else {
-      if (answerValue.trim() !== '') {
-        field.value.push(answerValue);
-        if (!field.multiple) {
-          this.incState();
-        }
-      } else if (!field.required) {
+      field.value.push(answerValue);
+      if (!field.multiple) {
         this.incState();
       }
     }

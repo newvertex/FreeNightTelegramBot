@@ -75,7 +75,7 @@ class Movie extends Template {
       value: []
     }, {
       name: 'movie-links',
-      type: 'text',
+      type: 'links',
       multiple: true,
       required: false,
       prompt: __('p-links', lang),
@@ -99,30 +99,34 @@ class Movie extends Template {
     let subLinks = '';
     let buttons = null;
 
-    let movieLinks = super.getFieldValue('movie-links');
-    for (let link of movieLinks) {
-      let mark1 = link.indexOf(' ');
-      let mark2 = link.indexOf(' ', mark1 + 1);
-      let mark3 = link.search(/(https?:\/\/)/);
+    let allLinks = super.getFieldValue('movie-links');
+    for (let link of allLinks) {
 
-      let linkType = link.substring(0, mark1);
-      let quality = link.substring(mark1 + 1, mark2);
-      let text = link.substring(mark2 + 1, mark3);
-      let url = link.substring(mark3);
-
-      if (linkType === '/link') {
-        links += `${seperator}\n🎥${quality}: 🔻(${text})\n🔥${url}\n`;
-      } else if (linkType === '/hyperLink') {
-        links += `${seperator}\n[🎥${quality}: 🔻(${text})🔥](${url})\n`;
-      } else if (linkType === '/sub') {
-        subLinks += `${seperator}\n📇SubLink:🔻\n🔥${url}\n`;
-      } else if (linkType === '/hyperSub') {
-        subLinks += `${seperator}\n[📇SubLink:🔻(${text})🔥](${url})\n`;
-      } else if (linkType === '/btn') {
-        if (!buttons) {
-          buttons = [];
-        }
-        buttons.push({'text': text, 'url': url});
+      switch (link.type) {
+        case 'Link':
+          links += `${seperator}\n🎥${link.quality}: 🔻(${link.label}) ${link.size}\n🔥${link.url}\n`;
+          break;
+        case 'HyperLink':
+          links += `${seperator}\n[🎥${link.quality}: 🔻(${link.label}) ${link.size}🔥](${link.url})\n`;
+          break;
+        case 'SubLink':
+          if (subLinks === '') {
+            subLinks += `${seperator}\n📇SubLink:🔻\n`;
+          }
+          subLinks += `🔥${link.quality}: 🔻(${link.label}) ${link.size}\n🔥${link.url}\n`;
+          break;
+        case 'HyperSubLink':
+          if (subLinks === '') {
+            subLinks += `${seperator}\n📇SubLink:🔻\n`;
+          }
+          subLinks += `[🎥${link.quality}: 🔻(${link.label}) ${link.size}🔥](${link.url})\n`;
+          break;
+        case 'Button':
+          if (!buttons) {
+            buttons = [];
+          }
+          buttons.push({'text': `🎥${link.quality}: 🔻(${link.label}) ${link.size}\n🔥`, 'url': link.url});
+          break;
       }
     }
 

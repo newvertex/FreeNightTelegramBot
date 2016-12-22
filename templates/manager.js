@@ -1,5 +1,6 @@
 const MoviePoster = require('./movie-poster');
 const Movie = require('./movie');
+const Link = require('./link');
 
 function selectTemplate(templateName, userLang) {
   let template = null;
@@ -16,4 +17,9 @@ function selectTemplate(templateName, userLang) {
   return template;
 }
 
+function newLink() {
+  return new Link();
+}
+
 module.exports.selectTemplate = selectTemplate;
+module.exports.newLink = newLink;
