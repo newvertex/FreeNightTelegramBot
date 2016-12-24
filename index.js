@@ -2,10 +2,10 @@ const Telegraf = require('telegraf');
 const { memorySession, Markup, Extra } = require('telegraf');
 
 const __ = require('multi-lang')('lang/lang.json', 'en', false);
+const opizo = require('opizo-api');
 
 let userManager = require('./user-manager');
 let imageUploader = require('./image-uploader');
-let shortLink = require('./shortlink');
 let templateManager = require('./templates/manager');
 
 // Enter bot API Token on here or add as environment varialbe
@@ -121,7 +121,7 @@ function shortener(ctx, userId, url, onLink = false) {
   if (isLinkValid(url)) {
     ctx.reply(__('shortLink-received', getLang(userId)));
 
-    shortLink(url)
+    opizo.extra(url)
       .then((result) => {
         let answerMsg = __('shortLink-success', { 'shortUrl': result.shortUrl, 'url': result.url }, getLang(userId));
 

@@ -26,6 +26,7 @@
     "imgur": "^0.2.0",
     "jsonfile": "^2.4.0",
     "multi-lang": "^0.1.2",
+    "opizo-api": "^0.1.0",
     "prettysize": "0.0.3",
     "request": "^2.79.0",
     "request-promise-native": "^1.0.3",
