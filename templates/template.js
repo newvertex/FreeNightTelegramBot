@@ -55,7 +55,7 @@ class Template {
   setFieldValue(fieldName, fieldValue) {
     let field = this._fields.filter(field => field.name === fieldName);
     if (field.length) {
-      field.value = fieldValue;
+      field[0].value.push(fieldValue);
     }
   }
 
