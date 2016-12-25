@@ -13,6 +13,9 @@ function selectTemplate(templateName, userLang) {
     case 'MoviePoster':
       template = new MoviePoster(userLang);
       break;
+    case 'PostPreview':
+      template = new PostPreview(userLang);
+      break;
   }
 
   return template;
@@ -22,10 +25,5 @@ function newLink() {
   return new Link();
 }
 
-function newPostPreview(photo, name, summary) {
-  return new PostPreview(photo, name, summary);
-}
-
 module.exports.selectTemplate = selectTemplate;
 module.exports.newLink = newLink;
-module.exports.newPostPreview = newPostPreview;

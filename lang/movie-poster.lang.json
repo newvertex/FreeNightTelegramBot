@@ -43,6 +43,14 @@
     "en": "Add links.\nUse /skip on end.\n\nPlease enter a valid url, to short it type `s ` before link url",
     "fa": ""
   },
+  "p-linkTitle": {
+    "en": "Enter title of the link button",
+    "fa": ""
+  },
+  "p-linkUrl": {
+    "en": "Enter url of the link button",
+    "fa": ""
+  },
   "p-hashTag": {
     "en": "Hash tag?",
     "fa": ""
