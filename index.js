@@ -210,6 +210,7 @@ bot.hears(/\/new (.+)$/, (ctx) => {
     if (template) {
       ctx.session.state = 'new';
       ctx.session.store = template;
+      ctx.session.postPreview = null;
 
       ctx.reply(__('newPost-start', { 'templateName': template.name }, getLang(userId)))
         .then(res => {
@@ -234,14 +235,17 @@ function fillStore(ctx) {
       ctx.reply(__('newPost-ready', getLang(userId)));
 
       if (store.name === 'Movie') {
-        ctx.session.tmpPostPreview =
-          templateManager.newPostPreview(
-            store.getFieldValue('photo')[0],
-            store.getFieldValue('movie-name')[0] || '-',
-            store.getFieldValue('movie-summary')[0] || '-'
-          );
-      }
+        let photo = store.getFieldValue('photo')[0];
+        let name = store.getFieldValue('movie-name')[0] || '-';
+        let summary = store.getFieldValue('movie-summary')[0] || '-';
 
+        let tmpPostPreview = templateManager.selectTemplate('PostPreview', getLang(userId));
+        tmpPostPreview.setFieldValue('photo', photo);
+        tmpPostPreview.setFieldValue('movie-name', name);
+        tmpPostPreview.setFieldValue('movie-summary', summary);
+        tmpPostPreview.setFieldValue('post-linkTitle', `GoTo ${name} Post`);
+        ctx.session.postPreview = tmpPostPreview;
+      }
     }
   }
 }
@@ -283,48 +287,50 @@ function postDelivery(ctx, userId, msg, args) {
 
   ctx.telegram.sendMessage(userId, __('message-sent', { postLink }, getLang(userId)));
 
-  if (args[1]) {
-    let chatId = getChatId(args[1], userId, false);
-    let postPreview = ctx.session.tmpPostPreview;
+  if (ctx.session.store.name === 'Movie' && args[1]) {
+    let postPreview = ctx.session.postPreview;
 
-    if (chatId && postLink !== '' &&
-      typeof postPreview !== 'undefined' && postPreview) {
+    if (postLink !== '' && typeof postPreview !== 'undefined' && postPreview) {
+      postPreview.setFieldValue('post-linkUrl', postLink);
 
-        let result = postPreview.result(getLang(userId));
-        let userSignature = userManager.getSignature(userId);
-
-        ctx.telegram.sendPhoto(chatId, result.data.photo, {
-            caption: result.data.text + userSignature,
-            reply_markup: Markup.inlineKeyboard([Markup.urlButton('🔗 GoTo Post', postLink)])
-          });
+      sendPost(ctx, userId, false, args[1], true);
     }
   }
+
 }
 
 function getUrlButtons(data) {
+  data = data || [];
+
   let buttons = [];
   for (let {text, url} of data) {
     buttons.push([Markup.urlButton(text, url)]);
   }
 
-  return Extra.markdown().markup(
-    Markup.inlineKeyboard(buttons)
-  );
+  return Markup.inlineKeyboard(buttons);
 }
 
-function sendPost(ctx, userId, preview, arg) {
+function sendPost(ctx, userId, preview, arg, isPostPreview = false) {
   let chatId = getChatId(arg, userId, preview);
   let userSignature = userManager.getSignature(userId)
-  let result = ctx.session.store.result(getLang(userId));
+
+  let result = null;
+  if (!isPostPreview) {
+    result = ctx.session.store.result(getLang(userId));
+  } else {
+    result = ctx.session.postPreview.result(getLang(userId));
+  }
 
   if (result.type === 'photo') {
-    return ctx.telegram.sendPhoto(chatId, result.data.photo, {caption: result.data.text + userSignature});
+    return ctx.telegram.sendPhoto(chatId, result.data.photo, {
+      caption: result.data.text + userSignature,
+      reply_markup: getUrlButtons(result.data.buttons)
+    });
   } else if (result.type === 'text') {
-    if (result.data.buttons) {
-      return ctx.telegram.sendMessage(chatId, result.data.text + userSignature, getUrlButtons(result.data.buttons));
-    } else {
-      return ctx.telegram.sendMessage(chatId, result.data.text + userSignature, {parse_mode: 'Markdown'});
-    }
+      return ctx.telegram.sendMessage(chatId, result.data.text + userSignature, {
+        parse_mode: 'Markdown',
+        reply_markup: getUrlButtons(result.data.buttons)
+      });
   }
 }
 
@@ -362,7 +368,7 @@ bot.command('preview', (ctx) => {
 
 bot.hears(/\/sendTo (.+)$/, (ctx) => {
   let state = ctx.session.state;
-  let args = ctx.match[1].split('#');
+  let args = ctx.match[1].split(' ');
 
   if (ctx.message.chat.type === 'private' && state &&
     (state === 'ready' || state === 'sent')) {
