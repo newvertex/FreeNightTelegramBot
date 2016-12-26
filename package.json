@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/newvertex/FreeNightTelegramBot#readme",
   "dependencies": {
+    "imdb-search": "^0.1.2",
     "imgur": "^0.2.0",
     "jsonfile": "^2.4.0",
     "multi-lang": "^0.1.2",

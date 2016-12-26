@@ -3,6 +3,7 @@ const { memorySession, Markup, Extra } = require('telegraf');
 
 const __ = require('multi-lang')('lang/lang.json', 'en', false);
 const opizo = require('opizo-api');
+const imdb = require('imdb-search');
 
 let userManager = require('./user-manager');
 let imageUploader = require('./image-uploader');
@@ -199,6 +200,38 @@ bot.on('photo', (ctx) => {
         });
     }
   }
+});
+
+bot.hears(/\/imdb (.+)$/, (ctx) => {
+  let state = ctx.session.state;
+  let args = ctx.match[1];
+
+  if (!args.startsWith('#')) {
+    args = args.split('#');
+
+    imdb.search(args[0], args[1] || '', args[2] || '')
+      .then((movies) => {
+        let message = '';
+        for (let movie of movies) {
+          message += `ID: ${movie.id} - ${movie.type} - ${movie.title} (${movie.year})\n`;
+        }
+        ctx.reply(message, { parse_mode: 'Markdown' });
+      })
+      .catch((err) => {
+        ctx.reply(err);
+      });
+
+  } else {
+    imdb.get(args.substring(1))
+      .then((movie) => {
+        let message = `[ ](${movie.poster})${movie.title} (${movie.year})\nType: ${movie.type}\nDirector: ${movie.director}\nGenre: ${movie.genres}\nCountry: ${movie.countries}\nActors: ${movie.actors}\nReleased: ${movie.released}\nSummary:${movie.plot}\n`;
+        ctx.reply(message, { parse_mode: 'Markdown' });
+      })
+      .catch((err) => {
+        ctx.reply(err);
+      });
+  }
+
 });
 
 bot.hears(/\/new (.+)$/, (ctx) => {
