@@ -11,7 +11,7 @@ class Link {
   }
 
   getNext() {
-    if (this.index < 5) {
+    if (this.index < this.fields.length) {
       return {
         'name': this.fields[this.index],
         'value': this[this.fields[this.index]]
@@ -22,7 +22,7 @@ class Link {
   }
 
   setNext(value) {
-    if (this.index < 5) {
+    if (this.index < this.fields.length) {
 
       if (value !== '.') {
         this[this.fields[this.index]] = value;
@@ -36,7 +36,7 @@ class Link {
   }
 
   hasNext() {
-    if (this.index < 5) {
+    if (this.index < this.fields.length) {
       return true;
     } else {
       return false;
