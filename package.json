@@ -1,6 +1,6 @@
 {
   "name": "free-night-telegram-bot",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "A Telegram bot to help channel's and/or group's admin to manage and send message",
   "main": "index.js",
   "scripts": {

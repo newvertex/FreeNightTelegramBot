@@ -106,5 +106,13 @@
   "links-added": {
     "en": "Link added successfuly",
     "fa": ""
+  },
+  "no-imdb" : {
+    "en": "No imdb movie selected!\nPlease use /imdb to get movie first, then use this command again.",
+    "fa": ""
+  },
+  "template-field-prompt": {
+    "en": "%{text}\nCurrent value is: %{value}\nEnter `.` to accept current value or answer the question",
+    "fa": ""
   }
 }

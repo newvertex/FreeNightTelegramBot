@@ -213,7 +213,7 @@ bot.hears(/\/imdb (.+)$/, (ctx) => {
       .then((movies) => {
         let message = '';
         for (let movie of movies) {
-          message += `ID: ${movie.id} - ${movie.type} - ${movie.title} (${movie.year})\n`;
+          message += `ID: ${movie.id} - ${movie.type} - ${movie.title} ${cleanYear(movie.year)}\n`;
         }
         ctx.reply(message, { parse_mode: 'Markdown' });
       })
@@ -224,7 +224,8 @@ bot.hears(/\/imdb (.+)$/, (ctx) => {
   } else {
     imdb.get(args.substring(1))
       .then((movie) => {
-        let message = `[ ](${movie.poster})${movie.title} (${movie.year})\nType: ${movie.type}\nDirector: ${movie.director}\nGenre: ${movie.genres}\nCountry: ${movie.countries}\nActors: ${movie.actors}\nReleased: ${movie.released}\nSummary:${movie.plot}\n`;
+        ctx.session.imdb = movie;
+        let message = `[ ](${movie.poster})${movie.title} ${cleanYear(movie.year)}\nDirector: ${movie.director}\nGenre: ${movie.genres}\nCountry: ${movie.countries}\nActors: ${movie.actors}\nReleased: ${getFormatedDate(movie.released)}\n`;
         ctx.reply(message, { parse_mode: 'Markdown' });
       })
       .catch((err) => {
@@ -234,16 +235,56 @@ bot.hears(/\/imdb (.+)$/, (ctx) => {
 
 });
 
+function cleanYear(year) {
+  if (typeof year !== 'object') {
+    return `(${year})`;
+  } else {
+    return `(${year.from}-${typeof year.to !== 'undefined' ? year.to : '?'})`
+  }
+}
+
+function getFormatedDate(date) {
+  let d = new Date(date);
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+}
+
+function fillStoreFromImdb(ctx) {
+  let store = ctx.session.store;
+  let imdb = ctx.session.imdb;
+
+  if (imdb) {
+    store.setFieldValue('photo', imdb.poster);
+    store.setFieldValue('movie-name', `${imdb.title} ${cleanYear(imdb.year)}`);
+    store.setFieldValue('movie-director', imdb.director);
+    store.setFieldValue('movie-stars', imdb.actors);
+    store.setFieldValue('movie-release-date', getFormatedDate(imdb.released));
+    store.setFieldValue('movie-country', imdb.countries);
+    store.setFieldValue('movie-genre', imdb.genres);
+    store.setFieldValue('movie-rank', imdb.imdb.rating);
+    store.setFieldValue('movie-reviewer-rank', typeof imdb.tomato !== 'undefined' ? imdb.tomato.rating : '-');
+    store.setFieldValue('movie-summary', imdb.plot);
+  }
+}
+
 bot.hears(/\/new (.+)$/, (ctx) => {
   if (ctx.message.chat.type === 'private') {
+    let args = ctx.match[1].split(' ');
     let userId = ctx.message.from.id;
 
-    let template = templateManager.selectTemplate(ctx.match[1], getLang(userId));
+    let template = templateManager.selectTemplate(args[0], getLang(userId));
 
     if (template) {
       ctx.session.state = 'new';
       ctx.session.store = template;
       ctx.session.postPreview = null;
+
+      if (args[1] === 'fromImdb') {
+        if (ctx.session.imdb) {
+          fillStoreFromImdb(ctx);
+        } else {
+          ctx.reply(__('no-imdb', getLang(userId)));
+        }
+      }
 
       ctx.reply(__('newPost-start', { 'templateName': template.name }, getLang(userId)))
         .then(res => {
@@ -262,7 +303,7 @@ function fillStore(ctx) {
   if (store) {
     let prompt = store.prompt();
     if (prompt) {
-      ctx.reply(prompt);
+      ctx.reply(__('template-field-prompt', { 'text': prompt.text, 'value': prompt.value }, getLang(userId)));
     } else {
       ctx.session.state = 'ready';
       ctx.reply(__('newPost-ready', getLang(userId)));

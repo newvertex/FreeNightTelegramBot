@@ -61,7 +61,10 @@ class Template {
 
   prompt() {
     if (this._state < this._fields.length) {
-      return this._fields[this._state].prompt;
+      return {
+        'text': this._fields[this._state].prompt,
+        'value': this._fields[this._state].value
+      }
     } else {
       return null;
     }
@@ -69,12 +72,20 @@ class Template {
 
   answer(answerValue) {
     let field = this._fields[this._state];
+    let skipMultiple = field.multiple && typeof answerValue === 'string' && answerValue === '/skip';
+    let skipValue = typeof answerValue === 'string' && answerValue === '.';
 
-    if (field.multiple && typeof answerValue === 'string' && answerValue === '/skip') {
+    if (skipMultiple) {
       this.incState();
     } else {
-      field.value.push(answerValue);
-      if (!field.multiple) {
+      if (!skipValue) {
+        if (field.multiple) {
+          field.value.push(answerValue);
+        } else {
+          field.value[0] = answerValue;
+        }
+      }
+      if (!field.multiple && (!field.required || field.value.length)) {
         this.incState();
       }
     }
