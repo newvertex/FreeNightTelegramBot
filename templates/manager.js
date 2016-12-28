@@ -1,7 +1,8 @@
 const MoviePoster = require('./movie-poster');
 const Movie = require('./movie');
-const Link = require('./link');
+const Series = require('./series');
 const PostPreview = require('./post-preview');
+const Link = require('./link');
 
 function selectTemplate(templateName, userLang) {
   let template = null;
@@ -15,6 +16,9 @@ function selectTemplate(templateName, userLang) {
       break;
     case 'PostPreview':
       template = new PostPreview(userLang);
+      break;
+    case 'Series':
+      template = new Series(userLang);
       break;
   }
 

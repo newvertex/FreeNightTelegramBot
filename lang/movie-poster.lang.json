@@ -51,6 +51,22 @@
     "en": "Enter url of the link button",
     "fa": ""
   },
+  "p-sectionHeader": {
+    "en": "Type Section header with any format you want!",
+    "fa": ""
+  },
+  "p-linksHeader": {
+    "en": "Type columns header with any format you want!",
+    "fa": ""
+  },
+  "p-arrayLinks": {
+    "en": "Enter row title on first line\nAnd enter each link on seperate line like this:\nTitle\nlabel1:http://example.com",
+    "fa": ""
+  },
+  "p-subLink": {
+    "en": "Enter sublink address",
+    "fa": ""
+  },
   "p-hashTag": {
     "en": "Hash tag?",
     "fa": ""
@@ -61,6 +77,10 @@
   },
   "movie-result": {
     "en": "[ ](%{poster})🎥Movie: %{name}\n👤Director: %{director}\n👥Starring: %{starring}\n📆Release date: %{release}\n🌍Country: %{country}\n🖥Genre: %{genre}\n💯Rank: %{rank}\n👁‍🗨Reviewer rank: %{reviewerRank}\n✍Summary: %{summary}\n​​\n%{links}\n%{subLinks}\n%{tag}\n",
+    "fa": ""
+  },
+  "series-result": {
+    "en": "[ ](%{poster})🎥Series: %{name}\n👤Director: %{director}\n👥Starring: %{starring}\n📆Release date: %{release}\n🌍Country: %{country}\n🖥Genre: %{genre}\n💯Rank: %{rank}\n👁‍🗨Reviewer rank: %{reviewerRank}\n✍Summary: %{summary}\n​​\n📜%{sectionHeader}\n🔖%{linksHeader}\n%{links}\n📇[Sublinks](%{subLink})\n%{tag}\n",
     "fa": ""
   },
   "movie-preview-result": {

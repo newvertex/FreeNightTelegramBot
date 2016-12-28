@@ -303,7 +303,11 @@ function fillStore(ctx) {
   if (store) {
     let prompt = store.prompt();
     if (prompt) {
-      ctx.reply(__('template-field-prompt', { 'text': prompt.text, 'value': prompt.value }, getLang(userId)));
+      if (store.currentFieldType === 'links' || store.currentFieldType === 'arrayLinks') {
+        ctx.reply(prompt.text);
+      } else {
+        ctx.reply(__('template-field-prompt', { 'text': prompt.text, 'value': prompt.value }, getLang(userId)));
+      }
     } else {
       ctx.session.state = 'ready';
       ctx.reply(__('newPost-ready', getLang(userId)));
@@ -530,6 +534,23 @@ bot.on('message', (ctx) => {
 
        linkNextPrompt(ctx, userId);
 
+      } else if (ctx.session.store.currentFieldType === 'arrayLinks' && text !== '/skip') {
+        let title = '';
+        let arrayLinks = [];
+
+        for (let t of text.split('\n')) {
+          if (title === '') {
+            title = t;
+          } else {
+            let label = t.substring(0, t.indexOf(':'));
+            let url = t.substring(t.indexOf(':') + 1);
+
+            arrayLinks.push(`[${label}](${url})`);
+          }
+        }
+
+        ctx.session.store.answer({ 'title': title, 'links': arrayLinks });
+        fillStore(ctx);
       } else {
         ctx.session.store.answer(text);
         fillStore(ctx);
