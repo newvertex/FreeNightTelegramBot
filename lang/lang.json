@@ -1,7 +1,7 @@
 {
   "welcome": {
-    "en": "Welcome! 😊",
-    "fa": "😊خوش آمدید"
+    "en": "Welcome! 😊\nUse /help to know me!",
+    "fa": "خوش آمدید😊 \nبرای آشنایی بیشتر با من از دستور /help استفاده نمایید"
   },
   "setLang-success": {
     "en": "Language set to English successfuly.",
@@ -13,31 +13,31 @@
   },
   "setSignature-success": {
     "en": "New signature submitted successfuly.",
-    "fa": ""
+    "fa": "امضای جدید ثبت شد."
   },
   "register-start": {
     "en": "I get your register request,\nSend below command on group or channel you want to register on it:\n/reg %{userId}\nor send /cancelReg to cancel registration!",
-    "fa": ""
+    "fa": "من درخواست ثبت نام شما را دریافت کردم، کد زیر را در گروه یا کانال مورد نظر جهت ثبت نام وارد کنید:\n/reg %{userId}\nیا از دستور /cancelReg برای لغو ثبت نام استفاده کنید."
   },
   "register-request-confirm": {
     "en": "Please confirm your registration with a unique name (you can't change it anymore),\nTo confirm it just send /confirm your-unique-name\nor to cancel it just send /cancel.",
-    "fa": ""
+    "fa": "برای تایید ثبت نام دستور زیر را به همراه یک نام منحصربفرد ارسال کنید(شما نمیتوانید بعدا این نام را عوض کنید)، \n /confirm your-unique-name\n یا با دستور /cancel ثبت نام را لغو کنید."
   },
   "register-confirm-success": {
     "en": "Registration confirmed, The new name is: %{chatKey}",
-    "fa": ""
+    "fa": "ثبت نام تایید شد، نام جدید ثبت شده: %{chatKey}"
   },
   "register-confirm-failed": {
     "en": "The entered name was exists, try another one\nPlease confirm it with a unique name (you can't change it anymore),\nTo confirm it just send /confirm your-unique-name\nor to cancel it just send /cancelReg.",
-    "fa": ""
+    "fa": "نام وارد شده وجود دارد لطفا دستور تایید را به همراه نام دیگری ارسال کنید."
   },
   "register-not-started": {
     "en": "You are not on registration!\nUse /help to read more.",
-    "fa": ""
+    "fa": "شما درحال ثبت نام نمی باشید\nاز دستور /help جهت اطلاعات بیشتر استفاده کنید."
   },
   "register-cancel": {
     "en": "Registration canceled!",
-    "fa": ""
+    "fa": "ثبت نام لغو شد."
   },
   "shortLink-received": {
     "en": "Link address received, Please wait...",
@@ -49,70 +49,70 @@
   },
   "shortLink-error-1": {
     "en": "%{errMessage}\n\nRequested link was: %{url}",
-    "fa": ""
+    "fa": "%{errMessage}\n\nلینک درخواست شده: %{url}"
   },
   "shortLink-error-2": {
     "en": "%{errMessage}\n\nShort link address is:\n\n %{shortUrl}\n\nRequested link was: %{url}",
-    "fa": ""
+    "fa": "%{errMessage}\n\nآدرس کوتاه: \n\n %{shortUrl}\n\nلینک درخواست شده: %{url}"
   },
   "invalidLink": {
     "en": "Link address is not valid!\nPlease use an address that starts with 'http://' or 'https://",
-    "fa": ""
+    "fa": "آدرس معتبر نیست!\nلطفا از آدرسی استفاده کنید که با http:// یا https:// شروع شده باشد."
   },
   "image-received": {
     "en": "Image received, Please wait...",
-    "fa": ""
+    "fa": "عکس دریافت شد، لطفا صبر کنید..."
   },
   "image-success": {
     "en": "Image link is:\n %{link}",
-    "fa": ""
+    "fa": "لینک عکس: \n %{link}"
   },
   "image-upload-error": {
     "en": "Error on uploading image:\n %{errMessage}\ntry again later",
-    "fa": ""
+    "fa": "اخطار در هنگام آپلود عکس:\n %{errMessage}\nدوباره تلاش کنید."
   },
   "image-error": {
     "en": "Error on get file link:\n %{errMessage}\ntry again later",
-    "fa": ""
+    "fa": "اخطار در هنگام دریافت لینک فایل:\n %{errMessage}\nدوباره تلاش کنید."
   },
   "newPost-start": {
     "en": "New %{templateName} was created👍, Please answer the questions to fill the fields of new post",
-    "fa": ""
+    "fa": "قالب %{templateName} ساخته شد👍، لطفا به سوالاتی که پرسیده می شود پاسخ دهید تا فیلد های قالب پست جدید کامل شود."
   },
   "newPost-failed": {
     "en": "Selected template not exists!",
-    "fa": ""
+    "fa": "قالب انتخاب شده وجود ندارد!"
   },
   "newPost-ready": {
-    "en": "This post is Ready to send\nNow you can use /sendTo channelKey or /sendTo groupKey commands to send this post to channel or group\nOr /preview to see a preview of your post",
-    "fa": ""
+    "en": "This post is Ready to send\nUse `/sendTo key` to send this post to channel or group\nOr /preview to see a preview of your post",
+    "fa": "این پست آماده ی ارسال است\nبا دستور /sendTo key برای ارسال پست به کانال یا گروه استفاده کنید،\nیا با دستور /preview پیش نمایش پست را مشاهده کنید."
   },
   "newPost-not-ready": {
     "en": "This post is not ready to send!\nPlease fill all the fields",
-    "fa": ""
+    "fa": "این پست آماده ی ارسال نیست!\nلطفا ابتدا فیلدها را کامل کنید."
   },
   "newPost-is-empty": {
     "en": "Noting to show!\nFirst fill some fields",
-    "fa": ""
+    "fa": "چیزی برای نمایش وجود ندارد!\nلطفا ابتدا فیلدها را کامل کنید."
   },
   "message-sent": {
     "en": "Message sent!\n %{postLink}",
-    "fa": ""
+    "fa": "پیغام ارسال شد!\n %{postLink}"
   },
   "links-prompt": {
     "en": "Please enter %{fieldName} of link,\nCurrent value is: %{fieldValue}\nEnter `.` to accept current value or type anything else",
-    "fa": ""
+    "fa": "لطفا مقدار %{fieldName} از لینک را وارد کنید،\nمقدار فعلی: %{fieldValue}\n برای پذیرفتن مقدار فعلی علامت `.` ارسال کنید و یا مقدار موردنظر خود را وارد کنید."
   },
   "links-added": {
     "en": "Link added successfuly",
-    "fa": ""
+    "fa": "لینک با موفقیت اضافه شد"
   },
   "no-imdb" : {
     "en": "No imdb movie selected!\nPlease use /imdb to get movie first, then use this command again.",
-    "fa": ""
+    "fa": "هیچ فیلمی از imdb انتخاب نشده است\nلطفا ابتدا از دستور /imdb برای انتخاب عنوان استفاده کنید."
   },
   "template-field-prompt": {
     "en": "%{text}\nCurrent value is: %{value}\nEnter `.` to accept current value or answer the question",
-    "fa": ""
+    "fa": "%{text}\nمقدار فعلی: %{value}\nبرای پذیرفتن مقدار فعلی علامت `.` ارسال کنید و یا مقدار موردنظر خود را وارد کنید."
   }
 }

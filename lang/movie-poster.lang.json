@@ -1,90 +1,90 @@
 {
   "p-uploadPhoto": {
     "en": "Upload a photo or give me the image link",
-    "fa": ""
+    "fa": "عکس را در همین صفحه آپلود کنید یا لینک عکس را به من بدهید"
   },
   "p-movieName": {
     "en": "What is the movie name?",
-    "fa": ""
+    "fa": "اسم فیلم چیه؟"
   },
   "p-movieDirector": {
     "en": "Who is the director?",
-    "fa": ""
+    "fa": "کارگردانش کیه؟"
   },
   "p-starring": {
     "en": "Starring?",
-    "fa": ""
+    "fa": "بازیگرانش چه کسانی هستن؟"
   },
   "p-release": {
     "en": "Release dates?",
-    "fa": ""
+    "fa": "تاریخ اکران؟"
   },
   "p-country": {
     "en": "Country?",
-    "fa": ""
+    "fa": "ساخت چه کشوری هست؟"
   },
   "p-genre": {
     "en": "Genre?",
-    "fa": ""
+    "fa": "ژانر فیلم چیه؟"
   },
   "p-rank": {
     "en": "Rank?",
-    "fa": ""
+    "fa": "چه رتبه ای گرفته؟"
   },
   "p-reviewerRank": {
     "en": "Reviewer rank?",
-    "fa": ""
+    "fa": "رتبه ی منتقدان؟"
   },
   "p-summary": {
     "en": "Summary?",
-    "fa": ""
+    "fa": "لطفا داستانش رو برام تعریف کن؟"
   },
   "p-links": {
     "en": "Add links.\nUse /skip on end.\n\nPlease enter a valid url, to short it type `s ` before link url",
-    "fa": ""
+    "fa": "اضافه کردن لینک ها\nاز /skip برای پایان دادن به اضافه کردن لینک استفاده کنید\nلطفا یک آدرس معتبر وارد کنید، برای اینکه لینک کوتاه شود قبل از آدرس لینک `s ` اضافه کنید."
   },
   "p-linkTitle": {
     "en": "Enter title of the link button",
-    "fa": ""
+    "fa": "عنوان دکمه را وارد کنید"
   },
   "p-linkUrl": {
     "en": "Enter url of the link button",
-    "fa": ""
+    "fa": "آدرس لینک دکمه را وارد کنید"
   },
   "p-sectionHeader": {
     "en": "Type Section header with any format you want!",
-    "fa": ""
+    "fa": "عنوان بخش را وارد کنید"
   },
   "p-linksHeader": {
     "en": "Type columns header with any format you want!",
-    "fa": ""
+    "fa": "عنوان ستون ها را وارد کنید"
   },
   "p-arrayLinks": {
     "en": "Enter row title on first line\nAnd enter each link on seperate line like this:\nTitle\nlabel1:http://example.com",
-    "fa": ""
+    "fa": "عنوان را در خط اول بنویسید\nو در خط های بعدی لینک ها را جداگانه قرار دهید مثل نمونه ی زیر:\n Title\nlabel1:http://example.com"
   },
   "p-subLink": {
     "en": "Enter sublink address",
-    "fa": ""
+    "fa": "آدرس ساب لینک را وارد کنید"
   },
   "p-hashTag": {
     "en": "Hash tag?",
-    "fa": ""
+    "fa": "هشت تگ؟"
   },
   "movie-poster-result": {
     "en": "🎥Movie: %{name}\n👤Director: %{director}\n👥Starring: %{starring}\n📆Release date: %{release}\n%{tag}\n",
-    "fa": ""
+    "fa": "🎥فیلم: %{name}\n👤کارگردان: %{director}\n👥ستارگان: %{starring}\n📆اکران: %{release}\n%{tag}\n"
   },
   "movie-result": {
     "en": "[ ](%{poster})🎥Movie: %{name}\n👤Director: %{director}\n👥Starring: %{starring}\n📆Release date: %{release}\n🌍Country: %{country}\n🖥Genre: %{genre}\n💯Rank: %{rank}\n👁‍🗨Reviewer rank: %{reviewerRank}\n✍Summary: %{summary}\n​​\n%{links}\n%{subLinks}\n%{tag}\n",
-    "fa": ""
+    "fa": "[ ](%{poster})🎥فیلم: %{name}\n👤کارگردان: %{director}\n👥ستارگان: %{starring}\n📆اکران: %{release}\n🌍محصول کشور: %{country}\n🖥ژانر: %{genre}\n💯امتیاز: %{rank}\n👁‍🗨منتقدین: %{reviewerRank}\n✍خلاصه داستان: %{summary}\n​​\n%{links}\n%{subLinks}\n%{tag}\n"
   },
   "series-result": {
     "en": "[ ](%{poster})🎥Series: %{name}\n👤Director: %{director}\n👥Starring: %{starring}\n📆Release date: %{release}\n🌍Country: %{country}\n🖥Genre: %{genre}\n💯Rank: %{rank}\n👁‍🗨Reviewer rank: %{reviewerRank}\n✍Summary: %{summary}\n​​\n📜%{sectionHeader}\n🔖%{linksHeader}\n%{links}\n📇[Sublinks](%{subLink})\n%{tag}\n",
-    "fa": ""
+    "fa": "[ ](%{poster})🎥سریال: %{name}\n👤کارگردان: %{director}\n👥ستارگان: %{starring}\n📆اکران: %{release}\n🌍محصول کشور: %{country}\n🖥ژانر: %{genre}\n💯امتیاز: %{rank}\n👁‍🗨منتقدین: %{reviewerRank}\n✍خلاصه داستان: %{summary}\n​​\n📜%{sectionHeader}\n🔖%{linksHeader}\n%{links}\n📇[Sublinks](%{subLink})\n%{tag}\n"
   },
   "movie-preview-result": {
     "en": "🎥Movie: %{name}\n✍Summary: %{summary}\n",
-    "fa": ""
+    "fa": "🎥فیلم: %{name}\n✍خلاصه داستان: %{summary}\n"
   }
 }

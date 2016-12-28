@@ -88,9 +88,41 @@ bot.command('start', (ctx) => {
 
   userManager.addUser(userId);
 
-  ctx.reply(__('welcome'));
+  ctx.reply(__('welcome'), getLang(userId));
+});
 
-  //TODO: ask user about language and set the default one
+bot.hears(/^\/help (.+)$/, (ctx) => {
+  let userId = ctx.message.from.id;
+  
+  switch (ctx.match[1]) {
+    case 'lang':
+      ctx.reply(__('help-lang', getLang(userId)));
+      break;
+    case 'signature':
+      ctx.reply(__('help-signature', getLang(userId)));
+      break;
+    case 'register':
+      ctx.reply(__('help-register', getLang(userId)));
+      break;
+    case 'shortLink':
+      ctx.reply(__('help-shortLink', getLang(userId)));
+      break;
+    case 'photo':
+      ctx.reply(__('help-photo', getLang(userId)));
+      break;
+    case 'imdb':
+      ctx.reply(__('help-imdb', getLang(userId)));
+      break;
+    case 'new':
+      ctx.reply(__('help-new', getLang(userId)));
+      break;
+    default:
+      ctx.reply(__('help', getLang(userId)));
+  }
+});
+
+bot.command('help', (ctx) => {
+  ctx.reply(__('help'), getLang(ctx.message.from.id));
 });
 
 bot.hears(/^\/setLang (.+)$/, (ctx) => {
@@ -312,7 +344,7 @@ function fillStore(ctx) {
       ctx.session.state = 'ready';
       ctx.reply(__('newPost-ready', getLang(userId)));
 
-      if (store.name === 'Movie') {
+      if (store.name === 'Movie' || store.name === 'Series') {
         let photo = store.getFieldValue('photo')[0];
         let name = store.getFieldValue('movie-name')[0] || '-';
         let summary = store.getFieldValue('movie-summary')[0] || '-';
