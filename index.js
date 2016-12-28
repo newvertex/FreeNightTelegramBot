@@ -91,38 +91,8 @@ bot.command('start', (ctx) => {
   ctx.reply(__('welcome'), getLang(userId));
 });
 
-bot.hears(/^\/help (.+)$/, (ctx) => {
-  let userId = ctx.message.from.id;
-  
-  switch (ctx.match[1]) {
-    case 'lang':
-      ctx.reply(__('help-lang', getLang(userId)));
-      break;
-    case 'signature':
-      ctx.reply(__('help-signature', getLang(userId)));
-      break;
-    case 'register':
-      ctx.reply(__('help-register', getLang(userId)));
-      break;
-    case 'shortLink':
-      ctx.reply(__('help-shortLink', getLang(userId)));
-      break;
-    case 'photo':
-      ctx.reply(__('help-photo', getLang(userId)));
-      break;
-    case 'imdb':
-      ctx.reply(__('help-imdb', getLang(userId)));
-      break;
-    case 'new':
-      ctx.reply(__('help-new', getLang(userId)));
-      break;
-    default:
-      ctx.reply(__('help', getLang(userId)));
-  }
-});
-
 bot.command('help', (ctx) => {
-  ctx.reply(__('help'), getLang(ctx.message.from.id));
+  ctx.reply(__('help', getLang(ctx.message.from.id)));
 });
 
 bot.hears(/^\/setLang (.+)$/, (ctx) => {
@@ -247,10 +217,10 @@ bot.hears(/\/imdb (.+)$/, (ctx) => {
         for (let movie of movies) {
           message += `ID: ${movie.id} - ${movie.type} - ${movie.title} ${cleanYear(movie.year)}\n`;
         }
-        ctx.reply(message, { parse_mode: 'Markdown' });
+        ctx.reply(message + __('select-imdb', getLang(ctx.message.from.id)), { parse_mode: 'Markdown' });
       })
       .catch((err) => {
-        ctx.reply(err);
+        ctx.reply(err + ــ('err-imdb', getLang(ctx.message.from.id)));
       });
 
   } else {

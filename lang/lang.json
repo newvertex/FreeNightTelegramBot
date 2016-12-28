@@ -111,8 +111,20 @@
     "en": "No imdb movie selected!\nPlease use /imdb to get movie first, then use this command again.",
     "fa": "هیچ فیلمی از imdb انتخاب نشده است\nلطفا ابتدا از دستور /imdb برای انتخاب عنوان استفاده کنید."
   },
+  "select-imdb": {
+    "en": "Select one movie by id like:\n/imdb #2",
+    "fa": "یک فیلم را با استفاده از id انتخاب کنید مثل:\n/imdb #2"
+  },
+  "err-imdb": {
+    "en": "You can use imdb id with /imdb #tt1211837",
+    "fa": "شما میتوانید با شناسه هم فیلم را انتخاب کنید /imdb #tt1211837"
+  },
   "template-field-prompt": {
     "en": "%{text}\nCurrent value is: %{value}\nEnter `.` to accept current value or answer the question",
     "fa": "%{text}\nمقدار فعلی: %{value}\nبرای پذیرفتن مقدار فعلی علامت `.` ارسال کنید و یا مقدار موردنظر خود را وارد کنید."
+  },
+  "help": {
+    "en": "Hi ✋ I'm FreeNight Telegram Bot, Good to see you,\nMy primary job is create Post message for you, I help channel/group admin/user to create Post from existing template\n\n/setLang fa or /setLang en - to change default language\n/setSignature your-words - your words on the ends of all post\n\n/shortLink your-url - request to generate a short url for you\n\nUpload a photo on private chat - upload image to imgur.com and return link\n\n/register - start registration used for fast send post\n\n/imdb movie-name - find a movie on imdb, used to create post from imdb info\n\n/new template-name - start ask some question to fill post fields\n    -Current available templates are: [Movie, Series, MoviePoster, PostPreview]\n\n/new template-name fromImdb - create new template based on last selected imdb movie\n\n/sendTo key - send current post to related key channel/group\n\n/sendTo channel-key group-key - send current post to channel and if current post support PostPreview then send a PostPreview to group\n    -Current templates support PostPreview: Movie, Series\n\nبرای تغییر زبان به فارسی از دستور زیر استفاده کنید:\n/setLang fa\nو دوباره دستور راهنما را ارسال کنید تا نسخه ی فارسی را بخوانید",
+    "fa": "سلام✋من بات تلگرام فری نایت هستم! از دیدن شما خوش وقتم!\nکار اصلی من کمک به ایجاد پست از روی قالب های آماده است، من به مدیر/کاربر گروه/کانال کمک میکنم که تا سریع تر و راحت تر پست ایجاد و ارسال کنند.\n\n/setLang fa or /setLang en - برای تغییر زبان\n/setSignature - برای ثبت امضا - امضای شما در پایین همه ی پست های شما نشان داده می شود\n\n/shortLink your-url - درخواست کوتاه کردن لینک\nاگر شما یک تصویر را در چت خصوصی با من برای من ارسال کنید من آن را در imgur.com آپلود میکنم و لینک رو برای شما برمیگردونم\n\n/register - شروع ثبت نام که برای ارسال سریعتر پست ها بعدا استفاده میشه\n\n/imdb movie-name - برای پیدا کردن یه فیلم از imdb، برای ایجاد پست بر اساس اطلاعات imdb استفاده میشود\n\n/new template-name - یک پست جدید بر اساس قالب تعیین شده میسازد - برای پر کردن فیلدهای قالب ایجاد شده شروع میکنم به سوال پرسیدن\nقالب های موجود فعلی: [Movie, Series, MoviePoster, PostPreview]\n\n/new template-name fromImdb - ایجاد قالب جدید بر اساس اطلاعات آخرین فیلم انتخاب شده توسط دستور imdb\n\n/sendTo key - برای ارسال پست فعلی به کانال یا گروهی که کد تعیین شده موقع ثبت نام اون رو گفتی\n/sendTo channel-key group-key - ارسال پست فعلی به کانال و اگر قالب پست فعلی امکان پیش نمایش داشته باشه یک پیش نمایش با لینک به کانال در گروه ارسال میشه\nقالب هایی که قابلیت پیش نمایش دارند: Movie, Series\n\nTo change language to english send `/setLang en`\nand resend /help to get english version of help"
   }
 }
