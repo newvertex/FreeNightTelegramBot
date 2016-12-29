@@ -13,15 +13,15 @@ let imageUploader = require('./image-uploader');
 let templateManager = require('./templates/manager');
 
 // Enter bot API Token on here or add as environment varialbe
-const BOT_API_TOKEN = process.env.API_TOKEN || '';
+const BOT_API_TOKEN = process.env.BOT_API_TOKEN || '';
 const PORT = process.env.PORT || 3000;
 const URL = process.env.URL || 'https://free-night.herokuapp.com';
 
 const bot = new Telegraf(BOT_API_TOKEN);
 
-bot.setWebhook(`${URL}/bot${API_TOKEN}`);
+bot.telegram.setWebhook(`${URL}/bot${BOT_API_TOKEN}`);
 
-expressApp.use(bot.webhookCallback(`/bot${API_TOKEN}`));
+expressApp.use(bot.webhookCallback(`/bot${BOT_API_TOKEN}`));
 
 bot.use(memorySession());
 
