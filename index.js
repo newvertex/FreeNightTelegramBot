@@ -159,7 +159,13 @@ function shortener(ctx, userId, url, onLink = false) {
         if (err.code === 1) {
           ctx.reply(__('shortLink-error-1', { "errMessage": err.message, "url": err.result.url }, getLang(userId)));
         } else if (err.code === 2) {
-          ctx.reply(__('shortLink-error-2', { "errMessage": err.message, "shortUrl": err.result.shortUrl, "url": err.result.url }, getLang(userId)));
+          ctx.reply(__('shortLink-error-2', { "errMessage": err.message, "shortUrl": err.result.shortUrl, "url": err.result.url }, getLang(userId)))
+            .then(res => {
+              if (onLink) {
+                ctx.session.tmpLink.setNext(err.result.shortUrl);
+                linkNextPrompt(ctx, userId);
+              }
+            });
         }
       });
 

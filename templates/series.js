@@ -121,7 +121,10 @@ class Movie extends Template {
     for (let item of allLinks) {
       links += `🎥${item.title}: ${item.links.join(' | ')}\n`;
     }
-    
+
+    let genre = super.getFieldValue('movie-genre')[0] || '-';
+    genre = (genre !== '-') ? genre.trim().split(' ').map(i => '#' + i).join(' ') : '';
+
     let tag = super.getFieldValue('hash-tag')[0] || '-';
     tag = (tag !== '-') ? '\n' + tag.trim().split(' ').map(i => '#' + i).join(' ') : '';
 
@@ -131,7 +134,7 @@ class Movie extends Template {
       'starring': super.getFieldValue('movie-stars')[0] || '-',
       'release': super.getFieldValue('movie-release-date')[0] || '-',
       'country': super.getFieldValue('movie-country')[0] || '-',
-      'genre': super.getFieldValue('movie-genre')[0] || '-',
+      'genre': genre,
       'rank': super.getFieldValue('movie-rank')[0] || '-',
       'reviewerRank': super.getFieldValue('movie-reviewer-rank')[0] || '-',
       'summary': super.getFieldValue('movie-summary')[0] || '-',
