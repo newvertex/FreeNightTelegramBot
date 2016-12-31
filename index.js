@@ -133,20 +133,9 @@ function shortener(ctx, userId, url, onLink = false) {
   if (isLinkValid(url)) {
     ctx.reply(__('shortLink-received', getLang(userId)));
 
-    opizo.extra(url)
+    opizo(url)
       .then((result) => {
-        let answerMsg = __('shortLink-success', { 'shortUrl': result.shortUrl, 'url': result.url }, getLang(userId));
-
-        if (result.fileInfo) {
-          answerMsg = `File info: ${result.fileInfo.name} - ${result.fileInfo.sizeInMB} \n\n` + answerMsg;
-
-          if (onLink) {
-            ctx.session.tmpLink.label = result.fileInfo.name;
-            ctx.session.tmpLink.size = result.fileInfo.sizeInMB;
-          }
-        }
-
-        ctx.reply(answerMsg)
+        ctx.reply(__('shortLink-success', { 'shortUrl': result.shortUrl, 'url': result.url }, getLang(userId)))
           .then(res => {
             if (onLink) {
               ctx.session.tmpLink.setNext(result.shortUrl);
@@ -155,18 +144,7 @@ function shortener(ctx, userId, url, onLink = false) {
           });
       })
       .catch((err) => {
-        // Code 1 for server error and code 2 for link access error
-        if (err.code === 1) {
-          ctx.reply(__('shortLink-error-1', { "errMessage": err.message, "url": err.result.url }, getLang(userId)));
-        } else if (err.code === 2) {
-          ctx.reply(__('shortLink-error-2', { "errMessage": err.message, "shortUrl": err.result.shortUrl, "url": err.result.url }, getLang(userId)))
-            .then(res => {
-              if (onLink) {
-                ctx.session.tmpLink.setNext(err.result.shortUrl);
-                linkNextPrompt(ctx, userId);
-              }
-            });
-        }
+        ctx.reply(__('shortLink-error-1', { "errMessage": err.message, "url": err.result.url }, getLang(userId)));
       });
 
   } else {
