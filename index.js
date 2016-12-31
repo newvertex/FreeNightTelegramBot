@@ -101,7 +101,7 @@ bot.command('start', (ctx) => {
 });
 
 bot.command('help', (ctx) => {
-  ctx.reply(__('help', getLang(ctx.message.from.id)));
+  ctx.reply(__('help', getLang(ctx.message.from.id)), { parse_mode: 'Markdown', disable_web_page_preview: true });
 });
 
 bot.hears(/^\/setLang (.+)$/, (ctx) => {
