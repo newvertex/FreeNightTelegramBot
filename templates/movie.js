@@ -131,7 +131,10 @@ class Movie extends Template {
     }
 
     let genre = super.getFieldValue('movie-genre')[0] || '-';
-    genre = (genre !== '-') ? genre.trim().split(' ').map(i => '#' + i).join(' ') : '';
+    if (typeof genre !== 'string') {
+      genre = genre.join(' ');
+    }
+    genre = (genre !== '-') ? '\n' + genre.trim().split(' ').map(i => '#' + i).join(' | ') : '';
 
     let tag = super.getFieldValue('hash-tag')[0] || '-';
     tag = (tag !== '-') ? '\n' + tag.trim().split(' ').map(i => '#' + i).join(' ') : '';
