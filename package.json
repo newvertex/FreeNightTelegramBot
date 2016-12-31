@@ -27,6 +27,7 @@
     "imdb-search": "^0.1.2",
     "imgur": "^0.2.0",
     "jsonfile": "^2.4.0",
+    "mongoose": "^4.7.5",
     "multi-lang": "^0.1.2",
     "opizo-api": "^0.1.0",
     "prettysize": "0.0.3",

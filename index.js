@@ -8,7 +8,7 @@ const __ = require('multi-lang')('lang/lang.json', 'en', false);
 const opizo = require('opizo-api');
 const imdb = require('imdb-search');
 
-let userManager = require('./user-manager');
+let userManager = require('./user-manager-db');
 let imageUploader = require('./image-uploader');
 let templateManager = require('./templates/manager');
 
@@ -229,7 +229,7 @@ bot.hears(/\/imdb (.+)$/, (ctx) => {
         ctx.reply(message + __('select-imdb', getLang(ctx.message.from.id)), { parse_mode: 'Markdown' });
       })
       .catch((err) => {
-        ctx.reply(err + ــ('err-imdb', getLang(ctx.message.from.id)));
+        ctx.reply(err + __('err-imdb', getLang(ctx.message.from.id)));
       });
 
   } else {
