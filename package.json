@@ -1,6 +1,6 @@
 {
   "name": "free-night-telegram-bot",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "A Telegram bot to help channel's and/or group's admin to manage and send message",
   "main": "index.js",
   "scripts": {
@@ -24,7 +24,7 @@
   "homepage": "https://github.com/newvertex/FreeNightTelegramBot#readme",
   "dependencies": {
     "express": "^4.14.0",
-    "imdb-search": "^0.1.2",
+    "imdb-search": "^0.1.4",
     "imgur": "^0.2.0",
     "jsonfile": "^2.4.0",
     "mongoose": "^4.7.5",

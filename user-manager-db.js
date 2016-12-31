@@ -9,15 +9,20 @@ mongoose.connection.on('error', console.error.bind(console, 'Error on connecting
 mongoose.connection.on('open', () => {
   console.log('Connected to mongodb');
   User.find({}, (err, result) => {
-    users = result;
+    if (err) {
+      console.log(`Error on getting users data: ${err}`);
+    } else {
+      users = result;
+      console.log('Users data load successfully');
+    }
   });
 });
 
 
 function addUser(userId) {
-  if (!users.filter((u) => u.id === userId).length) {
+  if (!users.filter((u) => u._id == userId).length) {
     let user = {
-      id: userId,
+      _id: userId,
       keys: [],
       signature: '',
       lang: 'en'
@@ -29,7 +34,7 @@ function addUser(userId) {
       if (err) {
         console.log(`Error on addUser: ${err}`);
       } else {
-        console.log(`New user added with id: ${result.id}`);
+        console.log(`New user added with id: ${result._id}`);
       }
     });
 
@@ -41,21 +46,21 @@ function addUser(userId) {
 }
 
 function addKey(user) {
-  let currentUser = users.filter((u) => u.id === user.id)[0];
+  let currentUser = users.filter((u) => u._id == user._id)[0];
 
-  if (!currentUser.keys.filter((k) => k.key === user.keys[0].key).length) {
+  if (!currentUser.keys.filter((k) => k.key == user.keys[0].key).length) {
 
     currentUser.keys.push(user.keys[0]);
 
     User.findByIdAndUpdate(
-      user.id,
+      user._id,
       { $push: { 'keys': user.keys[0] }},
       { upsert: true },
       (err, result) => {
         if (err) {
           console.log(`Error on AddKey: ${err}`);
         } else {
-          console.log(`Key add for user with id: ${result.id}`);
+          console.log(`Key add for user with id: ${result._id}`);
         }
       }
     );
@@ -70,13 +75,13 @@ function addKey(user) {
 function getId(user) {
   let result = null;
 
-  let currentUser = users.filter((u) => u.id === user.id);
+  let currentUser = users.filter((u) => u._id == user._id);
 
   if (currentUser.length) {
     result = {};
-    result.id = currentUser[0].id;
+    result._id = currentUser[0]._id;
 
-    let currentKey = currentUser[0].keys.filter((k) => k.key === user.keys[0].key);
+    let currentKey = currentUser[0].keys.filter((k) => k.key == user.keys[0].key);
 
     if (currentKey.length) {
       result.keys = {};
@@ -88,13 +93,13 @@ function getId(user) {
 }
 
 function getSignature(userId) {
-  let currentUser = users.filter((u) => u.id === userId);
+  let currentUser = users.filter((u) => u._id == userId);
 
   return currentUser.length && currentUser[0].signature ? currentUser[0].signature : '';
 }
 
 function setSignature(userId, userSignature) {
-  let currentUser = users.filter((u) => u.id === userId)[0];
+  let currentUser = users.filter((u) => u._id == userId)[0];
 
   currentUser['signature'] = userSignature;
 
@@ -106,7 +111,7 @@ function setSignature(userId, userSignature) {
       if (err) {
         console.log(`Error on setSignature: ${err}`);
       } else {
-        console.log(`Signature updated for user with id: ${result.id}`);
+        console.log(`Signature updated for user with id: ${result._id}`);
       }
     }
   );
@@ -115,13 +120,12 @@ function setSignature(userId, userSignature) {
 }
 
 function getLang(userId) {
-  let currentUser = users.filter((u) => u.id === userId);
-
+  let currentUser = users.filter((u) => u._id == userId);
   return currentUser.length && currentUser[0].lang ? currentUser[0].lang : 'en';
 }
 
 function setLang(userId, userLanguage) {
-  let currentUser = users.filter((u) => u.id === userId)[0];
+  let currentUser = users.filter((u) => u._id == userId)[0];
 
   currentUser['lang'] = userLanguage;
 
@@ -133,7 +137,7 @@ function setLang(userId, userLanguage) {
       if (err) {
         console.log(`Error on setLang: ${err}`);
       } else {
-        console.log(`Language updated for user with id: ${result.id}`);
+        console.log(`Language updated for user with id: ${result._id}`);
       }
     }
   );

@@ -4,9 +4,9 @@ let userSchema = new mongoose.Schema({
   _id: String,
   keys: [{
     key: { type: String },
-    id: { type: String }
+    kid: { type: String }
   }],
-  signature: String,
+  signature: { type: String, default: '' },
   lang: { type: String, default: 'en' }
 });
 

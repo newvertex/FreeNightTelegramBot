@@ -55,10 +55,10 @@ bot.hears(/^\/confirm (.+)$/, (ctx) => {
 
   if (userId in registerSession && registerSession[userId]) {
     let user = {
-      id: userId,
+      _id: userId,
       keys: [{
         key: chatKey,
-        id: registerSession[userId]
+        kid: registerSession[userId]
       }]
     };
 
@@ -347,17 +347,17 @@ function getChatId(arg, userId, preview) {
   let chatKey = arg;
 
   let user = {
-    id: userId,
+    _id: userId,
     keys: [{
       key: chatKey,
-       id: null
+      kid: null
      }]
   };
 
   let key = userManager.getId(user);
 
   if (key && key.keys) {
-    return key.keys[0].id;
+    return key.keys[0].kid;
   }
 
   return null;
@@ -376,7 +376,7 @@ function postDelivery(ctx, userId, msg, args) {
 
   ctx.telegram.sendMessage(userId, __('message-sent', { postLink }, getLang(userId)));
 
-  if (ctx.session.store.name === 'Movie' && args[1]) {
+  if (ctx.session.store.name === 'Movie' || ctx.session.store.name === 'Series' && args[1]) {
     let postPreview = ctx.session.postPreview;
 
     if (postLink !== '' && typeof postPreview !== 'undefined' && postPreview) {
@@ -411,12 +411,12 @@ function sendPost(ctx, userId, preview, arg, isPostPreview = false) {
   }
 
   if (result.type === 'photo') {
-    return ctx.telegram.sendPhoto(chatId, result.data.photo, {
+    return bot.telegram.sendPhoto(chatId, result.data.photo, {
       caption: result.data.text + userSignature,
       reply_markup: getUrlButtons(result.data.buttons)
     });
   } else if (result.type === 'text') {
-      return ctx.telegram.sendMessage(chatId, result.data.text + userSignature, {
+      return bot.telegram.sendMessage(chatId, result.data.text + userSignature, {
         parse_mode: 'Markdown',
         reply_markup: getUrlButtons(result.data.buttons)
       });
