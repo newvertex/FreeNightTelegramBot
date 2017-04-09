@@ -1,9 +1,6 @@
 const Telegraf = require('telegraf');
 const { memorySession, Markup, Extra } = require('telegraf');
 
-const express = require('express');
-const expressApp = express();
-
 const __ = require('multi-lang')('lang/lang.json', 'en', false);
 const opizo = require('opizo-api');
 const imdb = require('imdb-search');
@@ -14,14 +11,11 @@ let templateManager = require('./templates/manager');
 
 // Enter bot API Token on here or add as environment varialbe
 const BOT_API_TOKEN = process.env.BOT_API_TOKEN || '';
-const PORT = process.env.PORT || 3000;
 const URL = process.env.URL || 'https://free-night.herokuapp.com';
 
 const bot = new Telegraf(BOT_API_TOKEN);
 
 bot.telegram.setWebhook(`${URL}/bot${BOT_API_TOKEN}`);
-
-expressApp.use(bot.webhookCallback(`/bot${BOT_API_TOKEN}`));
 
 bot.use(memorySession());
 
@@ -554,13 +548,5 @@ bot.on('message', (ctx) => {
     }
 });
 
-expressApp.get('/', (req, res) => {
-  res.send('Welcome to FreeNight!');
-});
-
-expressApp.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
-// bot.startPolling();
-// console.log('Bot start polling....');
+module.exports = bot;
+module.exports.api = `/bot${BOT_API_TOKEN}`;
