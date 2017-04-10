@@ -14,6 +14,7 @@ mongoose.connection.on('open', () => {
     } else {
       users = result;
       console.log('Users data load successfully');
+      console.log(users)
     }
   });
 });
