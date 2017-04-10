@@ -4,7 +4,7 @@ const User = require('./models/user');
 
 let users = null;
 
-mongoose.connect(process.env.MONGODB_URI);
+// mongoose.connect(process.env.MONGODB_URI);
 mongoose.connection.on('error', console.error.bind(console, 'Error on connecting to mongodb '));
 mongoose.connection.on('open', () => {
   console.log('Connected to mongodb');
