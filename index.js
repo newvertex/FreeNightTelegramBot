@@ -1,5 +1,6 @@
 const Telegraf = require('telegraf');
 const { memorySession, Markup, Extra } = require('telegraf');
+const request = require('request-promise-native');
 
 const __ = require('multi-lang')('lang/lang.json', 'en', false);
 const opizo = require('opizo-api');
@@ -26,6 +27,49 @@ let registerSession = [];
 function getLang(userId) {
   return userManager.getLang(userId);
 }
+
+// Signup new user for web ui
+bot.command('web', (ctx) => {
+      // ask for email, password, name, & get user id from ctx and send a create request
+      let userId = ctx.message.from.id;
+      
+      ctx.reply(__('web-signup-info', { userId }, getLang(userId)));
+})
+
+// Signup new user for web ui
+bot.hears(/^\/web (.+)$/, (ctx) => {
+  if (typeof (ctx.message.chat.type) !== 'undefined') {
+    let userId = ctx.message.from.id;
+    if (ctx.message.chat.type === 'private') {
+      // ask for email, password, name, & get user id from ctx and send a create request
+      let data = ctx.match[1].split(',');
+      if (data.length === 3 && data[0].indexOf('@') > 0) {
+        // send post request to create user
+        request.post(`${URL}/users`, {
+          form: {
+            email: data[0],
+            password: data[1],
+            name: data[2],
+            tid: userId,
+          }
+        }).then(res => {
+          console.log('res', res)
+          // if signup successful reply success message
+          ctx.reply(__('web-signup-success', { userId }, getLang(userId)));
+        }).catch(err => {
+          console.log('err', err)
+          // else reply failed message
+          ctx.reply(__('web-signup-failed', { userId }, getLang(userId)));
+        })
+      } else {
+        ctx.reply(__('web-signup-not-valid-pattern', { userId }, getLang(userId)));
+      }
+    } else {
+      // show some info about web ui
+      ctx.reply(__('web-signup-only-private', { userId }, getLang(userId)));
+    }
+  }
+})
 
 // Put user on registration mode and ask for confirmation
 bot.command('register', (ctx) => {
@@ -161,8 +205,8 @@ bot.on('photo', (ctx) => {
     if (ctx.session.state === 'new' &&
       ctx.session.store.type === 'photo' &&
       ctx.session.store.currentFieldType === 'photo') {
-        ctx.session.store.answer(photoFileId);
-        fillStore(ctx);
+      ctx.session.store.answer(photoFileId);
+      fillStore(ctx);
     } else {
       ctx.reply(__('image-received', getLang(userId)));
 
@@ -175,8 +219,8 @@ bot.on('photo', (ctx) => {
               if (ctx.session.state === 'new' &&
                 ctx.session.store.type === 'text' &&
                 ctx.session.store.currentFieldType === 'photo') {
-                  ctx.session.store.answer(jsonResult.data.link);
-                  fillStore(ctx);
+                ctx.session.store.answer(jsonResult.data.link);
+                fillStore(ctx);
               } else {
                 return ctx.reply(__('image-success', { 'link': jsonResult.data.link }, getLang(userId)));
               }
@@ -329,7 +373,7 @@ function getChatId(arg, userId, preview) {
     keys: [{
       key: chatKey,
       kid: null
-     }]
+    }]
   };
 
   let key = userManager.getId(user);
@@ -370,7 +414,7 @@ function getUrlButtons(data) {
   data = data || [];
 
   let buttons = [];
-  for (let {text, url} of data) {
+  for (let { text, url } of data) {
     buttons.push([Markup.urlButton(text, url)]);
   }
 
@@ -394,10 +438,10 @@ function sendPost(ctx, userId, preview, arg, isPostPreview = false) {
       reply_markup: getUrlButtons(result.data.buttons)
     });
   } else if (result.type === 'text') {
-      return bot.telegram.sendMessage(chatId, result.data.text + userSignature, {
-        parse_mode: 'Markdown',
-        reply_markup: getUrlButtons(result.data.buttons)
-      });
+    return bot.telegram.sendMessage(chatId, result.data.text + userSignature, {
+      parse_mode: 'Markdown',
+      reply_markup: getUrlButtons(result.data.buttons)
+    });
   }
 }
 
@@ -429,8 +473,8 @@ bot.command('preview', (ctx) => {
   let state = ctx.session.state;
   if (ctx.message.chat.type === 'private' &&
     (state === 'new' || state === 'ready' || state === 'sent')) {
-      postAction(ctx, true);
-    }
+    postAction(ctx, true);
+  }
 });
 
 bot.hears(/\/sendTo (.+)$/, (ctx) => {
@@ -439,8 +483,8 @@ bot.hears(/\/sendTo (.+)$/, (ctx) => {
 
   if (ctx.message.chat.type === 'private' && state &&
     (state === 'ready' || state === 'sent')) {
-      postAction(ctx, false, args);
-    }
+    postAction(ctx, false, args);
+  }
 });
 
 // Register user and send request to confirm registration
@@ -501,51 +545,51 @@ bot.on('message', (ctx) => {
   if (typeof (text) !== 'undefined' &&
     ctx.message.chat.type === 'private' && ctx.session.state === 'new') {
 
-      let userId = ctx.message.from.id;
+    let userId = ctx.message.from.id;
 
-      if (ctx.session.store.currentFieldType === 'links' && text !== '/skip') {
-        // Create new link
-        if (typeof ctx.session.tmpLink === 'undefined' || !ctx.session.tmpLink) {
-          ctx.session.tmpLink = templateManager.newLink();
-        }
-
-       if (ctx.session.tmpLink.getNext().name === 'url') {
-         if (text.toLowerCase().startsWith('s ')) {
-           shortener(ctx, userId, text.substring(2), true);
-         } else if (isLinkValid(text)) {
-           ctx.session.tmpLink.setNext(text);
-         } else {
-           ctx.reply(__('invalidLink', getLang(userId)));
-         }
-       } else {
-         ctx.session.tmpLink.setNext(text);
-       }
-
-       linkNextPrompt(ctx, userId);
-
-      } else if (ctx.session.store.currentFieldType === 'arrayLinks' && text !== '/skip') {
-        let title = '';
-        let arrayLinks = [];
-
-        for (let t of text.split('\n')) {
-          if (title === '') {
-            title = t;
-          } else {
-            let label = t.substring(0, t.indexOf(':'));
-            let url = t.substring(t.indexOf(':') + 1);
-
-            arrayLinks.push(`[${label}](${url})`);
-          }
-        }
-
-        ctx.session.store.answer({ 'title': title, 'links': arrayLinks });
-        fillStore(ctx);
-      } else {
-        ctx.session.store.answer(text);
-        fillStore(ctx);
+    if (ctx.session.store.currentFieldType === 'links' && text !== '/skip') {
+      // Create new link
+      if (typeof ctx.session.tmpLink === 'undefined' || !ctx.session.tmpLink) {
+        ctx.session.tmpLink = templateManager.newLink();
       }
 
+      if (ctx.session.tmpLink.getNext().name === 'url') {
+        if (text.toLowerCase().startsWith('s ')) {
+          shortener(ctx, userId, text.substring(2), true);
+        } else if (isLinkValid(text)) {
+          ctx.session.tmpLink.setNext(text);
+        } else {
+          ctx.reply(__('invalidLink', getLang(userId)));
+        }
+      } else {
+        ctx.session.tmpLink.setNext(text);
+      }
+
+      linkNextPrompt(ctx, userId);
+
+    } else if (ctx.session.store.currentFieldType === 'arrayLinks' && text !== '/skip') {
+      let title = '';
+      let arrayLinks = [];
+
+      for (let t of text.split('\n')) {
+        if (title === '') {
+          title = t;
+        } else {
+          let label = t.substring(0, t.indexOf(':'));
+          let url = t.substring(t.indexOf(':') + 1);
+
+          arrayLinks.push(`[${label}](${url})`);
+        }
+      }
+
+      ctx.session.store.answer({ 'title': title, 'links': arrayLinks });
+      fillStore(ctx);
+    } else {
+      ctx.session.store.answer(text);
+      fillStore(ctx);
     }
+
+  }
 });
 
 module.exports = bot;
